@@ -3,13 +3,16 @@ import 'dart:math' show Random;
 class User {
   final String _id =
       DateTime.now().millisecond.toString() + Random().nextInt(1000).toString();
-  String firstname = "Unknown";
-  String lastname = "Unknown";
-  String username = "Unknown";
-  late String _password;
-  String bio = "Empty";
-  late DateTime dateJoined;
+
+  final DateTime dateJoined = DateTime.now();
   List<User> _friends = [];
+
+  late String firstname;
+  late String lastname;
+  late String username;
+
+  late String _password;
+  late String bio;
 
   String get getId => _id;
 
@@ -28,4 +31,14 @@ class User {
   void addFriend(User friend) {
     _friends.add(friend);
   }
+
+  void setBio(String bio) {
+    this.bio = bio;
+  }
+
+  User({
+    required this.firstname,
+    required this.lastname,
+    required this.username,
+  });
 }
