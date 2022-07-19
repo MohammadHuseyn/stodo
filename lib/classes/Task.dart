@@ -20,5 +20,7 @@ class Task {
     required this.title,
     required this.description,
     required this.owner,
-  });
+  }){
+    tagged.add(owner);
+  }
 }

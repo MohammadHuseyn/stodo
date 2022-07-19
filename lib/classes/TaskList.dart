@@ -14,6 +14,7 @@ class TaskList {
   late String AD;
   late String university;
   late String name;
+  late String description;
   late User creator;
 
   String get getId => _id;
@@ -28,5 +29,8 @@ class TaskList {
       {required this.name,
       required this.AD,
       required this.university,
-      required this.creator}) {}
+      required this.creator,
+      required this.description}) {
+    users.add(creator);
+  }
 }
