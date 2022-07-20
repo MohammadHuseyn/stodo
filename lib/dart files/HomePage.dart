@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
-
 class MyHomePage extends StatefulWidget {
-  MyHomePage(
-      {Key? key,
-      required this.title,
-      required this.mainUser,
-      required this.taskLists})
+  MyHomePage({Key? key,
+    required this.title,
+    required this.mainUser,
+    required this.taskLists})
       : super(key: key);
 
   final String title;
@@ -23,9 +21,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawerEdgeDragWidth: MediaQuery.of(context).size.width,
+        drawerEdgeDragWidth: MediaQuery
+            .of(context)
+            .size
+            .width,
         drawer: Drawer(
-            width: MediaQuery.of(context).size.width * 0.8,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width * 0.8,
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -49,9 +53,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                 padding: const EdgeInsets.all(20),
                                 child: CircleAvatar(
                                   minRadius:
-                                      MediaQuery.of(context).size.width * 0.16,
+                                  MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width * 0.16,
                                   backgroundImage:
-                                      const AssetImage("avatar.png"),
+                                  const AssetImage("avatar.png"),
                                 ),
                               ),
                               SizedBox(
@@ -86,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("Edit profile"),
                                 trailing:
-                                    const Icon(Icons.keyboard_arrow_right),
+                                const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -96,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("New list"),
                                 trailing:
-                                    const Icon(Icons.keyboard_arrow_right),
+                                const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -106,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("All lists"),
                                 trailing:
-                                    const Icon(Icons.keyboard_arrow_right),
+                                const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -116,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("Friends"),
                                 trailing:
-                                    const Icon(Icons.keyboard_arrow_right),
+                                const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -126,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("Highlighted"),
                                 trailing:
-                                    const Icon(Icons.keyboard_arrow_right),
+                                const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -136,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("Setting"),
                                 trailing:
-                                    const Icon(Icons.keyboard_arrow_right),
+                                const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                             ],
@@ -157,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 hoverColor: Colors.orange,
                                 title: const Text("Invite friends"),
                                 trailing:
-                                    const Icon(Icons.keyboard_arrow_right),
+                                const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -168,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 hoverColor: Colors.green,
                                 title: const Text("Contact us"),
                                 trailing:
-                                    const Icon(Icons.keyboard_arrow_right),
+                                const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -179,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("Log out"),
                                 trailing:
-                                    const Icon(Icons.keyboard_arrow_right),
+                                const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                             ],
@@ -195,34 +202,102 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title),
           centerTitle: true,
           actions: <Widget>[
-            IconButton(onPressed: () {}, icon: Icon(Icons.search_rounded))
+            IconButton(onPressed: () =>
+                showSearch(
+                    context: context, delegate: HomePageSearchDelegate(taskLists: widget.taskLists)),
+                icon: Icon(Icons.search_rounded))
           ],
         ),
         body: Container(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
           child: ListView.builder(
             itemCount: widget.taskLists.length,
-            itemBuilder: (context,index){
+            itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: (){},
+                onTap: () {},
                 child: Card(
-                  margin: EdgeInsets.only(left: 15,right: 15,top: 10),
+                  margin: EdgeInsets.only(left: 15, right: 15, top: 10),
                   child: ListTile(
-                    title: Text(widget.taskLists.elementAt(index).name,style: TextStyle(fontSize: 18),),
-                    subtitle: Text(widget.taskLists.elementAt(index).description),
-                    trailing: Wrap(
-                      spacing: 5,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: <Widget>[
-                        Text(widget.taskLists.elementAt(index).users.length.toString(),style: TextStyle(fontSize: 18),),
-                        Icon(Icons.people,size: 30,)
-                      ],
-                    )
+                      title: Text(widget.taskLists
+                          .elementAt(index)
+                          .name, style: TextStyle(fontSize: 18),),
+                      subtitle: Text(widget.taskLists
+                          .elementAt(index)
+                          .description),
+                      trailing: Wrap(
+                        spacing: 5,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: <Widget>[
+                          Text(widget.taskLists
+                              .elementAt(index)
+                              .users
+                              .length
+                              .toString(), style: TextStyle(fontSize: 18),),
+                          Icon(Icons.people, size: 30,)
+                        ],
+                      )
                   ),
                 ),
               );
             },
           ),
         ));
+  }
+
+}
+
+class HomePageSearchDelegate extends SearchDelegate {
+  HomePageSearchDelegate({required this.taskLists});
+  List<TaskList> taskLists;
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+          onPressed: () {
+            query == "" ? close(context, null) : query = "";
+          }, icon: const Icon(Icons.clear)
+      )
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          close(context, null);
+        },
+        icon: const Icon(Icons.arrow_back)
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<TaskList> searchResults = taskLists.where((element) {
+      final result = element.name.toLowerCase();
+      final input = query.toLowerCase();
+      return result.contains(input);
+    }).toList();
+    return Container(
+      child: ListView.builder(
+        itemCount: searchResults.length,
+        itemBuilder: (context, index){
+          return ListTile(
+            title: Text(searchResults.elementAt(index).name,),
+            onTap: (){
+              query = searchResults.elementAt(index).name;
+              showResults(context);
+            },
+          );
+        },
+      ),
+    );
   }
 }
