@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
+import 'AddTaskList.dart';
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key,
+  const MyHomePage({Key? key,
     required this.title,
     required this.mainUser,
-    required this.taskLists})
+  })
       : super(key: key);
 
   final String title;
   final User mainUser;
-  List<TaskList> taskLists;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -21,6 +20,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        hoverColor: Colors.green,
+        child: Icon(Icons.playlist_add,size: 30),
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AddTaskList(mainUser: widget.mainUser)));
+        },
+      ),
         drawerEdgeDragWidth: MediaQuery
             .of(context)
             .size
@@ -204,7 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: <Widget>[
             IconButton(onPressed: () =>
                 showSearch(
-                    context: context, delegate: HomePageSearchDelegate(taskLists: widget.taskLists)),
+                    context: context, delegate: HomePageSearchDelegate(taskLists: widget.mainUser.taskLists)),
                 icon: Icon(Icons.search_rounded))
           ],
         ),
@@ -214,24 +220,24 @@ class _MyHomePageState extends State<MyHomePage> {
               .size
               .height,
           child: ListView.builder(
-            itemCount: widget.taskLists.length,
+            itemCount: widget.mainUser.taskLists.length,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {},
                 child: Card(
                   margin: EdgeInsets.only(left: 15, right: 15, top: 10),
                   child: ListTile(
-                      title: Text(widget.taskLists
+                      title: Text(widget.mainUser.taskLists
                           .elementAt(index)
                           .name, style: TextStyle(fontSize: 18),),
-                      subtitle: Text(widget.taskLists
+                      subtitle: Text(widget.mainUser.taskLists
                           .elementAt(index)
                           .description),
                       trailing: Wrap(
                         spacing: 5,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: <Widget>[
-                          Text(widget.taskLists
+                          Text(widget.mainUser.taskLists
                               .elementAt(index)
                               .users
                               .length

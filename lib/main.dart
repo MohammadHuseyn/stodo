@@ -31,13 +31,16 @@ class MyApp extends StatelessWidget {
     taskList2.tasks.add(task4);
     taskList2.tasks.add(task5);
     taskList2.tasks.add(task6);
+
+    mainUser.taskLists.add(taskList1);
+    mainUser.taskLists.add(taskList2);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'stodo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Stodo',mainUser: mainUser,taskLists: [taskList1,taskList2]),
+      home: MyHomePage(title: 'Stodo',mainUser: mainUser),
     );
   }
 }
