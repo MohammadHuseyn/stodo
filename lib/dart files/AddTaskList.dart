@@ -17,8 +17,9 @@ class AddTaskList extends StatefulWidget {
 class _AddTaskListState extends State<AddTaskList> {
   var nameController = TextEditingController();
   var descriptionController = TextEditingController();
-  var universityController = TextEditingController();
-  var ADController = TextEditingController();
+  var educationCenterController = TextEditingController();
+  var educationCenterDescriptionController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +66,16 @@ class _AddTaskListState extends State<AddTaskList> {
           Padding(
             padding: const EdgeInsets.only(left: 50, right: 50, top: 25),
             child: TextField(
-              controller: ADController,
+              controller: educationCenterController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(borderSide: BorderSide()),
-                hintText: 'Which major are you studying?',
+                hintText: 'Which University, institute, Company, etc is this for?',
                 hintStyle: TextStyle(),
                 labelStyle: TextStyle(),
                 enabledBorder: OutlineInputBorder(borderSide: BorderSide()),
-                labelText: 'AD',
+                labelText: 'University | Company | etc',
                 prefixIcon: Icon(
-                  Icons.question_mark,
+                  Icons.place,
                 ),
               ),
             ),
@@ -82,16 +83,16 @@ class _AddTaskListState extends State<AddTaskList> {
           Padding(
             padding: const EdgeInsets.only(left: 50, right: 50, top: 25),
             child: TextField(
-              controller: universityController,
+              controller: educationCenterDescriptionController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(borderSide: BorderSide()),
-                hintText: 'Which University are you studying in?',
+                hintText: 'Add some description if you like about last field ',
                 hintStyle: TextStyle(),
                 labelStyle: TextStyle(),
                 enabledBorder: OutlineInputBorder(borderSide: BorderSide()),
-                labelText: 'University',
+                labelText: 'EC, C description',
                 prefixIcon: Icon(
-                  Icons.place,
+                  Icons.question_mark,
                 ),
               ),
             ),
@@ -107,9 +108,33 @@ class _AddTaskListState extends State<AddTaskList> {
                 ),
                 child: Text("Create TaskList",style: TextStyle(fontSize: 20),),
                 onPressed: (){
-                  TaskList list = new TaskList(name: nameController.text, AD: ADController.text, university: universityController.text, creator: widget.mainUser, description: descriptionController.text);
-                  setStateNewTaskList(list);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage(title: "Stodo", mainUser: widget.mainUser)));
+                  if (nameController.text == "" || descriptionController.text == "" || educationCenterController.text == ""){
+                    String toast = "";
+                    if (nameController.text == ""){
+                      toast = "\"Name\"";
+                    }
+                    if(descriptionController.text == ""){
+                      toast += toast == ""? "":", ";
+                      toast += "\"Description\"";
+                    }
+                    if (educationCenterController.text == ""){
+                      toast += toast == ""? "":", ";
+                      toast += "\"University\\Company\"";
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Row(
+                        children: [
+                          Icon(Icons.info,color: Colors.white,),
+                          SizedBox(width: 5,),
+                          Text(toast + " Can not be empty"),
+                        ],
+                      ),
+                    ));
+                  }else{
+                    TaskList list = new TaskList(name: nameController.text,educationCenter: educationCenterController.text, educationCenterDescription: educationCenterController.text, creator: widget.mainUser, description: descriptionController.text);
+                    setStateNewTaskList(list);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage(title: "Stodo", mainUser: widget.mainUser)));
+                  }
                 },
               ),
             )
