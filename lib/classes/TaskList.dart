@@ -11,8 +11,8 @@ class TaskList {
   List<User> _joinRequests = [];
   final DateTime dateCreated = DateTime.now();
 
-  late String AD;
-  late String university;
+  late String educationCenterDescription;
+  late String educationCenter;
   late String name;
   late String description;
   late User creator;
@@ -27,8 +27,8 @@ class TaskList {
 
   TaskList(
       {required this.name,
-      required this.AD,
-      required this.university,
+      required this.educationCenter,
+      required this.educationCenterDescription,
       required this.creator,
       required this.description}) {
     users.add(creator);
