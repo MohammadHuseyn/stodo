@@ -228,7 +228,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Card(
                   margin: EdgeInsets.only(left: 15, right: 15, top: 10),
                   child: ListTile(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TaskListPage(taskList: widget.mainUser.taskLists.elementAt(index)))),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TaskListPage(taskList: widget.mainUser.taskLists.elementAt(index),mainUser: widget.mainUser,))),
                       title: Text(widget.mainUser.taskLists
                           .elementAt(index)
                           .name, style: TextStyle(fontSize: 18),),
