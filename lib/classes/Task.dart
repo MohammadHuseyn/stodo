@@ -9,7 +9,7 @@ class Task {
   bool done = false;
   List<User> tagged = [];
   final DateTime dateCreated = DateTime.now();
-
+  late DateTime deadline;
   late String title;
   late String description;
   late User owner;
@@ -22,5 +22,7 @@ class Task {
     required this.owner,
   }){
     tagged.add(owner);
+    DateTime now = DateTime.now();
+    deadline = DateTime(now.year,now.month,now.day + 1);
   }
 }
