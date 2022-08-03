@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:timeago_flutter/timeago_flutter.dart';
-
 import '../classes/Task.dart';
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
@@ -20,6 +20,7 @@ class TaskListPage extends StatefulWidget {
 class _TaskListPageState extends State<TaskListPage> {
   @override
   Widget build(BuildContext context) {
+    // widget.taskList.sortTasksInDate();
     var titleC = TextEditingController(), descC = TextEditingController();
     // var focusNode = FocusNode();
     return Scaffold(
@@ -65,39 +66,86 @@ class _TaskListPageState extends State<TaskListPage> {
                 itemCount: widget.taskList.tasks.length,
                 itemBuilder: (context, index) {
                   Task task = widget.taskList.tasks.elementAt(index);
-                  return Card(
-                    margin: EdgeInsets.only(left: 15, right: 15, top: 10),
-                    child: ListTile(
-                      subtitle: Wrap(spacing: 5, children: [
-                        Timeago(
-                            builder: (context, value) => Text(value + ', '),
-                            date: task.dateCreated),
-                        Text(task.description),
-                      ]),
-                      leading: IconButton(
-                        icon: Icon(
-                          task.done
-                              ? Icons.check_circle
-                              : Icons.radio_button_unchecked,
-                          color: Colors.green,
+                  return  Card(
+                      margin: EdgeInsets.only(left: 15, right: 15, top: 10),
+                      child: Slidable(
+                        closeOnScroll: true,
+                        key: UniqueKey(),
+                        child: ListTile(
+                        subtitle: Wrap(spacing: 5, children: [
+                          Timeago(
+                              builder: (context, value) => Text(value + ', '),
+                              date: task.dateCreated),
+                          Text(task.description),
+                        ]),
+                        leading: IconButton(
+                          icon: Icon(
+                            task.done
+                                ? Icons.check_circle
+                                : Icons.radio_button_unchecked,
+                            color: Colors.green,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              task.done = !task.done;
+                            });
+                          },
                         ),
-                        onPressed: () {
-                          setState(() {
-                            task.done = !task.done;
-                          });
-                        },
-                      ),
-                      title: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        child: Text(
-                          task.title,
-                          style: TextStyle(
-                              decoration: task.done
-                                  ? TextDecoration.lineThrough
-                                  : null),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: Text(
+                            task.title,
+                            style: TextStyle(
+                                decoration: task.done
+                                    ? TextDecoration.lineThrough
+                                    : null),
+                          ),
                         ),
+                        tileColor: task.done?Colors.black12:null,
                       ),
+                    startActionPane: ActionPane(
+                      motion: DrawerMotion(),
+                      dismissible: DismissiblePane(
+                          motion: DrawerMotion(),
+                          onDismissed: () {
+                        Task undo = task;
+                        deleteSlideAction(undo);
+                      }),
+                      children: [
+                        SlidableAction(
+                          onPressed: (context){
+                            Task undo = task;
+                            deleteSlideAction(undo);
+                          },
+                          autoClose: false,
+                          backgroundColor: Color(0xFFFE4A49),
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Delete',
+                        ),
+                      ],
                     ),
+                        endActionPane: ActionPane(
+                          motion: DrawerMotion(),
+                          children: [
+                            SlidableAction(
+                              // An action can be bigger than the others.
+                              onPressed: (context){},
+                              backgroundColor: Color(0xFF7BC043),
+                              foregroundColor: Colors.white,
+                              icon: Icons.archive,
+                              label: 'Archive',
+                            ),
+                            SlidableAction(
+                              onPressed: (context){},
+                              backgroundColor: Colors.purple,
+                              foregroundColor: Colors.white,
+                              icon: Icons.share,
+                              label: 'Share',
+                            ),
+                          ],
+                        ),
+                  )
                   );
                 },
               ),
@@ -170,26 +218,9 @@ class _TaskListPageState extends State<TaskListPage> {
                                                     setState(() {
                                                       newTask.description =
                                                           descC.text;
-                                                      int taskListIndex = widget
-                                                          .mainUser.taskLists
-                                                          .indexOf(
-                                                              widget.taskList);
-                                                      widget.mainUser.taskLists
-                                                          .elementAt(
-                                                              taskListIndex)
-                                                          .tasks
-                                                          .add(newTask);
+                                                      addTask(newTask);
                                                     });
                                                     Navigator.pop(context);
-                                                    Navigator.pop(context);
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) => TaskListPage(
-                                                                taskList: widget
-                                                                    .taskList,
-                                                                mainUser: widget
-                                                                    .mainUser)));
                                                   },
                                                 ),
                                                 iconButtonBefore: IconButton(
@@ -236,7 +267,28 @@ class _TaskListPageState extends State<TaskListPage> {
         break;
     }
   }
+  void addTask(Task task){
+    setState((){
+      widget.taskList.tasks.add(task);
+      // widget.taskList.sortTasksInDate();
+    });
+  }
 
+  void deleteSlideAction(Task undo){
+    setState((){
+      widget.taskList.tasks.remove(undo);
+    });
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('Task deleted'),
+        action: SnackBarAction(label: 'UNDO', onPressed: (){
+          scaffold.hideCurrentSnackBar;
+          addTask(undo);
+        }),
+      ),
+    );
+  }
   Widget bottomSheetWidget(TextEditingController controller,
       {required IconButton iconButtonAfter,
       required IconButton iconButtonBefore,
