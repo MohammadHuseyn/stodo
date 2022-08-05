@@ -33,8 +33,6 @@ class MyApp extends StatelessWidget {
     taskList2.tasks.add(task6);
 
     task1.tagged.add(mainUser);
-    task1.tagged.add(mainUser);
-    task1.tagged.add(mainUser);
 
     mainUser.taskLists.add(taskList1);
     mainUser.taskLists.add(taskList2);
