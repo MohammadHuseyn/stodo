@@ -205,7 +205,7 @@ class _TaskListPageState extends State<TaskListPage> {
     return Container(
       height: 120,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+        padding: const EdgeInsets.all(30),
         child: Row(
           children: [
             iconButtonBefore,
