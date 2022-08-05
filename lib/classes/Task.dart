@@ -23,6 +23,6 @@ class Task {
   }){
     tagged.add(owner);
     DateTime now = DateTime.now();
-    deadline = DateTime(now.year,now.month,now.day + 1);
+    deadline = DateTime(now.year,now.month,now.day + 1,now.hour,now.minute,now.second);
   }
 }

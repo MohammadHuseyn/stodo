@@ -5,6 +5,7 @@ import 'package:timeago_flutter/timeago_flutter.dart';
 
 import '../classes/Task.dart';
 import '../classes/TaskList.dart';
+import 'TaskPage.dart';
 
 class TaskItem extends StatefulWidget {
   TaskItem({required this.task, required this.taskList});
@@ -25,11 +26,15 @@ class _TaskItemState extends State<TaskItem> {
         closeOnScroll: true,
         key: UniqueKey(),
         child: ListTile(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TaskPage(task: widget.task,))),
           subtitle: Wrap(spacing: 5, children: [
             Timeago(
                 builder: (context, value) => Text(value + ', '),
                 date: widget.task.dateCreated),
-            Text(widget.task.description),
+            Text(
+                widget.task.description.split('\n').elementAt(0)
+                  + (widget.task.description.split('\n').length > 1 ? "..." : "")
+            ),
           ]),
           leading:  Ink(
             decoration: ShapeDecoration(
