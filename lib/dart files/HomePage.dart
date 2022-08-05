@@ -234,7 +234,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           .name, style: TextStyle(fontSize: 18),),
                       subtitle: Text(widget.mainUser.taskLists
                           .elementAt(index)
-                          .description),
+                          .description.split('\n').elementAt(0) +
+                          (widget.mainUser.taskLists
+                              .elementAt(index)
+                              .description.split('\n').length > 1 ? "..." : "")
+                      ),
                       trailing: Wrap(
                         spacing: 5,
                         crossAxisAlignment: WrapCrossAlignment.center,
