@@ -8,6 +8,7 @@ import '../classes/User.dart';
 import 'dart:math';
 
 import 'TaskItem.dart';
+import 'TaskPage.dart';
 
 class TaskListPage extends StatefulWidget {
   TaskListPage({required this.taskList, required this.mainUser});
@@ -68,7 +69,101 @@ class _TaskListPageState extends State<TaskListPage> {
                 itemCount: widget.taskList.tasks.length,
                 itemBuilder: (context, index) {
                   Task task = widget.taskList.tasks.elementAt(index);
-                  return TaskItem(task: task,taskList: widget.taskList,);
+                  return Card(
+                      margin: EdgeInsets.only(left: 15, right: 15, top: 10),
+                      child: Slidable(
+                        closeOnScroll: true,
+                        key: UniqueKey(),
+                        child: ListTile(
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TaskPage(task: task,mainUser: widget.mainUser,taskList: widget.taskList,))),
+                          subtitle: Wrap(spacing: 5, children: [
+                            Timeago(
+                                builder: (context, value) => Text(value + ', '),
+                                date: task.dateCreated),
+                            Text(
+                                task.description.split('\n').elementAt(0)
+                                    + (task.description.split('\n').length > 1 ? "..." : "")
+                            ),
+                          ]),
+                          leading:  Ink(
+                            decoration: ShapeDecoration(
+                                shape: CircleBorder(),
+                                color: Colors.white
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                task.done
+                                    ? Icons.check_circle
+                                    : Icons.radio_button_unchecked,
+                                color: Colors.green,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  task.done = !task.done;
+                                });
+                              },
+                            ),
+                          ),
+                          trailing: CircleAvatar(
+                            backgroundImage:
+                            const AssetImage("avatar.png"),
+                          ),
+                          title: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Text(
+                              task.title,
+                              style: TextStyle(
+                                  decoration: task.done
+                                      ? TextDecoration.lineThrough
+                                      : null),
+                            ),
+                          ),
+                          tileColor: task.done ? Colors.black12 : null,
+                        ),
+                        startActionPane: ActionPane(
+                          motion: DrawerMotion(),
+                          dismissible: DismissiblePane(
+                              motion: DrawerMotion(),
+                              onDismissed: () {
+                                Task undo = task;
+                                deleteSlideAction(undo);
+                              }),
+                          children: [
+                            SlidableAction(
+                              onPressed: (context) {
+                                Task undo = task;
+                                deleteSlideAction(undo);
+                              },
+                              autoClose: true,
+                              backgroundColor: Color(0xFFFE4A49),
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete,
+                              label: 'Delete',
+                            ),
+                          ],
+                        ),
+                        endActionPane: ActionPane(
+                          motion: DrawerMotion(),
+                          children: [
+                            SlidableAction(
+                              // An action can be bigger than the others.
+                              onPressed: (context) {},
+                              backgroundColor: Color(0xFF7BC043),
+                              foregroundColor: Colors.white,
+                              icon: Icons.archive,
+                              label: 'Archive',
+                            ),
+                            SlidableAction(
+                              onPressed: (context) {},
+                              backgroundColor: Colors.purple,
+                              foregroundColor: Colors.white,
+                              icon: Icons.share,
+                              label: 'Share',
+                            ),
+                          ],
+                        ),
+                      )
+                  );
                 },
               ),
             ),
@@ -196,6 +291,21 @@ class _TaskListPageState extends State<TaskListPage> {
     });
   }
 
+  void deleteSlideAction(Task undo) {
+    setState(() {
+      widget.taskList.tasks.remove(undo);
+    });
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('Task deleted'),
+        action: SnackBarAction(label: 'UNDO', onPressed: () {
+          scaffold.hideCurrentSnackBar;
+          addTask(undo);
+        }),
+      ),
+    );
+  }
 
   Widget bottomSheetWidget(TextEditingController controller,
       {required IconButton iconButtonAfter,

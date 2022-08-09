@@ -1,11 +1,19 @@
+import 'dart:html';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../classes/Task.dart';
+import '../classes/TaskList.dart';
+import '../classes/User.dart';
+import 'TaskListPage.dart';
 
 class TaskPage extends StatefulWidget {
   Task task;
+  TaskList taskList;
+  User mainUser;
 
-  TaskPage({required this.task});
+  TaskPage(
+      {required this.task, required this.mainUser, required this.taskList});
 
   @override
   State<TaskPage> createState() => _TaskPageState();
@@ -14,6 +22,7 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
   @override
   Widget build(BuildContext context) {
+    ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
     final children = <Widget>[
       Center(
         child: Padding(
@@ -49,154 +58,200 @@ class _TaskPageState extends State<TaskPage> {
         ));
       }
     }
+    children.add(SizedBox(
+      height: 70,
+    ));
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.task.title),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.red,
+            ),
+            onPressed: () {
+              setState(() {
+                changeValues(type: "delete", value: widget.task);
+              });
+            },
+          )
+        ],
+      leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: (){
+            Navigator.pop(context);
+            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => TaskListPage(mainUser: widget.mainUser, taskList: widget.taskList)));
+            },
       ),
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: AssetImage("avatar.png"),
-                      radius: 30,
-                    ),
-                    title: Center(
-                      child: RichText(
-                        text: TextSpan(children: [
-                          TextSpan(
-                            text: "owner: ",
-                            style: TextStyle(color: Colors.black54),
-                          ),
-                          TextSpan(text: widget.task.owner.firstname)
-                        ]),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage("avatar.png"),
+                        radius: 30,
+                      ),
+                      title: Center(
+                        child: RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text: "owner: ",
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                            TextSpan(text: widget.task.owner.firstname)
+                          ]),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Card(
-                child: ListTile(
-                  title: Center(
-                      child: Padding(
-                    child: (widget.task.done
-                        ? Text(
-                            "Done",
-                            style: TextStyle(fontSize: 25),
-                          )
-                        : RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(children: [
-                              TextSpan(
-                                  text: "Not done yet :(\n\n",
-                                  style: TextStyle(fontSize: 20)),
-                              TextSpan(
-                                  text: timeLeft(widget.task.deadline),
-                                  style: TextStyle(fontSize: 15))
-                            ]),
-                          )),
-                    padding: EdgeInsets.all(15),
-                  )),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                    setState(() {
-                      widget.task.done = !widget.task.done;
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text("Task set as " +
-                          (widget.task.done ? "Done" : "Undone")),
-                    ));
-                  },
+                Card(
+                  child: ListTile(
+                    tileColor: widget.task.done ? Colors.green : Colors.indigo,
+                    title: Center(
+                        child: Padding(
+                      child: (widget.task.done
+                          ? Text(
+                              "Done",
+                              style:
+                                  TextStyle(fontSize: 25, color: Colors.white),
+                            )
+                          : RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(children: [
+                                TextSpan(
+                                    text: "Not done yet :(\n\n",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.white)),
+                                TextSpan(
+                                    text: timeLeft(widget.task.deadline),
+                                    style: TextStyle(
+                                        fontSize: 15, color: Colors.white))
+                              ]),
+                            )),
+                      padding: EdgeInsets.all(widget.task.done ? 29 : 15),
+                    )),
+                    onTap: () {
+                      scaffoldMessenger.removeCurrentSnackBar();
+                      setState(() {
+                        widget.task.done = !widget.task.done;
+                      });
+                      scaffoldMessenger.showSnackBar(SnackBar(
+                        content: Text("Task set as " +
+                            (widget.task.done ? "Done" : "Undone")),
+                      ));
+                    },
+                  ),
                 ),
-              ),
-              Card(
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: Text("Title"),
-                      title: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          widget.task.title,
-                          textAlign: TextAlign.end,
+                Card(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: Text("Title"),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            widget.task.title,
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                        onTap: () {
+                          var controller = TextEditingController();
+                          controller.text = widget.task.title;
+                          textEditorBottomPopup(
+                              controller: controller,
+                              minLines: 1,
+                              maxLines: 1,
+                              height: 120,
+                              type: 'title');
+                        },
+                      ),
+                      ListTile(
+                        leading: Text("Description"),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            widget.task.description,
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                        onTap: () {
+                          var controller = TextEditingController();
+                          controller.text = widget.task.description;
+                          textEditorBottomPopup(
+                              controller: controller,
+                              minLines: 3,
+                              maxLines: 5,
+                              height: 220,
+                              type: 'description');
+                        },
+                      ),
+                      ListTile(
+                          leading: Text("Deadline date"),
+                          title: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              widget.task.deadline.toString().substring(0, 16),
+                              textAlign: TextAlign.end,
+                            ),
+                          ),
+                          onTap: () async {
+                            DateTime deadline = widget.task.deadline;
+                            final DateTime? value = await showDatePicker(
+                                currentDate: widget.task.deadline,
+                                context: context,
+                                initialDate: deadline,
+                                firstDate: DateTime(2015),
+                                lastDate: DateTime(2040),
+                                confirmText: "Next");
+                            if (value != null) {
+                              final TimeOfDay? time = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay(
+                                    hour: deadline.hour,
+                                    minute: deadline.minute),
+                                initialEntryMode: TimePickerEntryMode.dial,
+                                confirmText: "Set",
+                              );
+                              if (time != null) {
+                                deadline = DateTime(value.year, value.month,
+                                    value.day, time.hour, time.minute);
+                                setState((){
+                                  changeValues(type: "date", value: deadline);
+                                });
+                              }
+                            }
+                          }),
+                      ListTile(
+                        leading: Text("Date created"),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            widget.task.dateCreated.toString().substring(0, 16),
+                            textAlign: TextAlign.end,
+                          ),
                         ),
                       ),
-                      onTap: () {
-                        var controller = TextEditingController();
-                        controller.text = widget.task.title;
-                        textEditorBottomPopup(
-                            controller: controller,
-                            minLines: 1,
-                            maxLines: 1,
-                            height: 120,
-                            type: 'title');
-                      },
-                    ),
-                    ListTile(
-                      leading: Text("Description"),
-                      title: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          widget.task.description,
-                          textAlign: TextAlign.end,
-                        ),
-                      ),
-                      onTap: () {
-                        var controller = TextEditingController();
-                        controller.text = widget.task.description;
-                        textEditorBottomPopup(
-                            controller: controller,
-                            minLines: 3,
-                            maxLines: 5,
-                            height: 220,
-                            type: 'description');
-                      },
-                    ),
-                    ListTile(
-                      leading: Text("Deadline date"),
-                      title: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          widget.task.deadline.toString(),
-                          textAlign: TextAlign.end,
-                        ),
-                      ),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      leading: Text("Date created"),
-                      title: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          widget.task.dateCreated.toString(),
-                          textAlign: TextAlign.end,
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Card(
-                child: SingleChildScrollView(
+                Card(
                   child: Container(
-                      height: children.length / 2 * 85 >=
-                              MediaQuery.of(context).size.height - 490
-                          ? MediaQuery.of(context).size.height - 490
-                          : children.length / 2 * 85,
-                      child: SingleChildScrollView(
-                        child: Wrap(
-                          children: children,
-                        ),
-                      )),
+                    child: Wrap(children: children),
+                  ),
                 ),
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -204,6 +259,7 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   void changeValues({required String type, required var value}) {
+    ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
     setState(() {
       switch (type) {
         case "title":
@@ -212,8 +268,26 @@ class _TaskPageState extends State<TaskPage> {
         case "description":
           widget.task.description = value.toString();
           break;
-        case "date": print(value.toString());
+        case "date":
+          widget.task.deadline = value;
+          break;
+        case "delete":
       }
+    });
+  }
+
+  void addTask(Task task) {
+    setState(() {
+      // scaffoldMessenger.removeCurrentSnackBar();
+      widget.taskList.tasks.add(task);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => TaskPage(
+                  task: task,
+                  mainUser: widget.mainUser,
+                  taskList: widget.taskList)));
+      // scaffoldMessenger.showSnackBar(SnackBar(content: Text("Task added")));
     });
   }
 
@@ -247,19 +321,19 @@ class _TaskPageState extends State<TaskPage> {
                       child: Column(
                         children: [
                           TextField(
-                                  scrollController: ScrollController(),
-                                  minLines: minLines,
-                                  maxLines: maxLines,
-                                  autofocus: true,
-                                  controller: controller,
-                                  textAlign: TextAlign.center,
-                                  decoration: new InputDecoration.collapsed(
-                                      hintText: 'Title',
-                                      hintStyle: TextStyle(
-                                        fontSize: 22,
-                                      )),
-                                  style: TextStyle(fontSize: 25),
-                                ),
+                            scrollController: ScrollController(),
+                            minLines: minLines,
+                            maxLines: maxLines,
+                            autofocus: true,
+                            controller: controller,
+                            textAlign: TextAlign.center,
+                            decoration: new InputDecoration.collapsed(
+                                hintText: 'Title',
+                                hintStyle: TextStyle(
+                                  fontSize: 22,
+                                )),
+                            style: TextStyle(fontSize: 25),
+                          ),
                           Spacer(),
                           Text(
                             "Select a title for you task and type it",
@@ -275,7 +349,9 @@ class _TaskPageState extends State<TaskPage> {
                         color: Colors.green,
                       ),
                       onPressed: () {
-                        changeValues(type: type, value: controller.text);
+                        setState((){
+                          changeValues(type: type, value: controller.text);
+                        });
                         Navigator.pop(context);
                       },
                     )

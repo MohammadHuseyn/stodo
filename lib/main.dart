@@ -32,8 +32,6 @@ class MyApp extends StatelessWidget {
     taskList2.tasks.add(task5);
     taskList2.tasks.add(task6);
 
-    task1.tagged.add(mainUser);
-
     mainUser.taskLists.add(taskList1);
     mainUser.taskLists.add(taskList2);
     return MaterialApp(

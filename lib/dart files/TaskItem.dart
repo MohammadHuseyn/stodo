@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:stodo/dart%20files/TaskListPage.dart';
 import 'package:timeago_flutter/timeago_flutter.dart';
 
 import '../classes/Task.dart';
 import '../classes/TaskList.dart';
+import '../classes/User.dart';
 import 'TaskPage.dart';
 
 class TaskItem extends StatefulWidget {
-  TaskItem({required this.task, required this.taskList});
-
+  TaskItem({required this.task, required this.taskList,required this.mainUser});
+  User mainUser;
   Task task;
   TaskList taskList;
 
@@ -26,7 +28,7 @@ class _TaskItemState extends State<TaskItem> {
         closeOnScroll: true,
         key: UniqueKey(),
         child: ListTile(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TaskPage(task: widget.task,))),
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TaskPage(task: widget.task,mainUser: widget.mainUser,taskList: widget.taskList,))),
           subtitle: Wrap(spacing: 5, children: [
             Timeago(
                 builder: (context, value) => Text(value + ', '),
@@ -85,7 +87,7 @@ class _TaskItemState extends State<TaskItem> {
               Task undo = widget.task;
               deleteSlideAction(undo);
             },
-            autoClose: false,
+            autoClose: true,
             backgroundColor: Color(0xFFFE4A49),
             foregroundColor: Colors.white,
             icon: Icons.delete,
