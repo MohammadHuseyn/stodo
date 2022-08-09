@@ -60,6 +60,27 @@ class _TaskPageState extends State<TaskPage> {
     children.add(SizedBox(
       height: 70,
     ));
+    children.add(
+      ListTile(
+        tileColor: Colors.green[800],
+        title: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Tag someone",style: TextStyle(color: Colors.white),),
+              SizedBox(width: 10,),
+              Icon(Icons.add_circle,color: Colors.white,)
+            ],
+          ),
+        ),
+        onTap: (){
+
+        },
+      )
+    );
+    children.add(SizedBox(
+      height: 70,
+    ));
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.task.title),
@@ -155,7 +176,9 @@ class _TaskPageState extends State<TaskPage> {
 
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(widget.task.stared? "Task set as stared":"Task Not set as stared"),
+                  content: Text(widget.task.stared
+                      ? "Task set as stared"
+                      : "Task Not set as stared"),
                   action: SnackBarAction(
                     label: "Ok",
                     onPressed: () {
