@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:stodo/dart%20files/TaskListInformationPage.dart';
 import 'package:timeago_flutter/timeago_flutter.dart';
 import '../classes/Task.dart';
 import '../classes/TaskList.dart';
@@ -42,6 +43,12 @@ class _TaskListPageState extends State<TaskListPage> {
                   (widget.taskList.users.length <= 1 ? " user" : " users"),
               style: TextStyle(color: Colors.white70, fontSize: 15),
             )),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TaskListInformationPage(
+                      mainUser: widget.mainUser, taskList: widget.taskList)),
+            ),
           ),
         ),
         actions: [
@@ -102,10 +109,13 @@ class _TaskListPageState extends State<TaskListPage> {
                               // An action can be bigger than the others.
                               onPressed: (context) {
                                 setState(() => task.stared = !task.stared);
-                                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
-                                  content: Text(task.stared? "Task set as stared":"Task Not set as stared"),
+                                  content: Text(task.stared
+                                      ? "Task set as stared"
+                                      : "Task Not set as stared"),
                                   action: SnackBarAction(
                                     label: "Ok",
                                     onPressed: () {
@@ -190,7 +200,7 @@ class _TaskListPageState extends State<TaskListPage> {
                               ),
                               task.stared
                                   ? Transform.rotate(
-                                      angle: pi  - 50,
+                                      angle: pi - 50,
                                       child: Icon(
                                         Icons.star,
                                         color: Colors.orange,
