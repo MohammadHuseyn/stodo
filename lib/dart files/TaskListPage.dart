@@ -190,7 +190,7 @@ class _TaskListPageState extends State<TaskListPage> {
                               ),
                               task.stared
                                   ? Transform.rotate(
-                                      angle: pi,
+                                      angle: pi  - 50,
                                       child: Icon(
                                         Icons.star,
                                         color: Colors.orange,
