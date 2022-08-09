@@ -1,0 +1,431 @@
+import 'package:share_plus/share_plus.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import '../classes/Task.dart';
+import '../classes/TaskList.dart';
+import '../classes/User.dart';
+import 'HomePage.dart';
+import 'TaskListPage.dart';
+
+class TaskListInformationPage extends StatefulWidget {
+  TaskList taskList;
+  User mainUser;
+
+  TaskListInformationPage({required this.mainUser, required this.taskList});
+
+  @override
+  State<TaskListInformationPage> createState() =>
+      _TaskListInformationPageState();
+}
+
+class _TaskListInformationPageState extends State<TaskListInformationPage> {
+  @override
+  Widget build(BuildContext context) {
+    ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
+    final children = <Widget>[
+      Center(
+        child: Padding(
+          child: Text(
+            "Users",
+            style: TextStyle(fontSize: 15),
+          ),
+          padding: EdgeInsets.only(top: 10),
+        ),
+      )
+    ];
+    for (int i = 0; i < widget.taskList.users.length; i++) {
+      children.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundImage: AssetImage("avatar.png"),
+            ),
+            title: Text(
+              widget.taskList.users.elementAt(i).firstname,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+      if (i + 1 != widget.taskList.users.length) {
+        children.add(Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Divider(
+            color: Colors.black54,
+          ),
+        ));
+      }
+    }
+    children.add(SizedBox(
+      height: 70,
+    ));
+    children.add(ListTile(
+      tileColor: Colors.green[800],
+      title: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Add someone",
+              style: TextStyle(color: Colors.white),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Icon(
+              Icons.add_circle,
+              color: Colors.white,
+            )
+          ],
+        ),
+      ),
+      onTap: () {},
+    ));
+    children.add(SizedBox(
+      height: 70,
+    ));
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.taskList.name),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return StatefulBuilder(
+                      builder: (context, setState) {
+                        return AlertDialog(
+                          title: Center(
+                              child: Text(
+                                  'Are you sure you want to delete this tasklist?')),
+                          actions: <Widget>[
+                            ElevatedButton(
+                              onPressed: () => Navigator.pop(context),
+                              // Closes the dialog
+                              child: Text('No'),
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 88, vertical: 15),
+                                  primary: Colors.indigo),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                changeValues(
+                                    type: "delete", value: widget.taskList);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MyHomePage(
+                                              mainUser: widget.mainUser,
+                                              title: 'Stodo',
+                                            )));
+
+                                scaffoldMessenger.hideCurrentSnackBar();
+                                scaffoldMessenger.showSnackBar(SnackBar(
+                                  content:
+                                      Text("TaskList deleted successfully"),
+                                  action: SnackBarAction(
+                                    label: 'Ok',
+                                    onPressed: () =>
+                                        scaffoldMessenger.hideCurrentSnackBar(),
+                                  ),
+                                ));
+                              },
+                              child: Text('Yes'),
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 88, vertical: 15),
+                                  primary: Colors.deepOrange),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  });
+            },
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          IconButton(
+              icon: Icon(Icons.share),
+              onPressed: () {
+                Share.share('I have a Task on ');
+              }),
+          SizedBox(
+            width: 10,
+          ),
+        ],
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TaskListPage(
+                        mainUser: widget.mainUser, taskList: widget.taskList)));
+          },
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage("avatar.png"),
+                        radius: 30,
+                      ),
+                      title: Center(
+                        child: RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text: "creator: ",
+                              style: TextStyle(color: Colors.black54),
+                            ),
+                            TextSpan(text: widget.taskList.creator.firstname)
+                          ]),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: Text("Name"),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            widget.taskList.name,
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                        onTap: () {
+                          var controller = TextEditingController();
+                          controller.text = widget.taskList.name;
+                          textEditorBottomPopup(
+                              controller: controller,
+                              minLines: 1,
+                              maxLines: 1,
+                              height: 120,
+                              type: 'name');
+                        },
+                      ),
+                      ListTile(
+                        leading: Text("Description"),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            widget.taskList.description,
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                        onTap: () {
+                          var controller = TextEditingController();
+                          controller.text = widget.taskList.description;
+                          textEditorBottomPopup(
+                              controller: controller,
+                              minLines: 3,
+                              maxLines: 5,
+                              height: 220,
+                              type: 'description');
+                        },
+                      ),
+                      ListTile(
+                        leading: Text("ED center/Company"),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            widget.taskList.educationCenter,
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                        onTap: () {
+                          var controller = TextEditingController();
+                          controller.text = widget.taskList.educationCenter;
+                          textEditorBottomPopup(
+                              controller: controller,
+                              minLines: 1,
+                              maxLines: 1,
+                              height: 120,
+                              type: 'educationCenter');
+                        },
+                      ),
+                      ListTile(
+                        leading: Text("ED center/Company description"),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: widget.taskList.educationCenterDescription ==
+                                  ""
+                              ? Text(
+                                  "no description",
+                                  style: TextStyle(color: Colors.grey),
+                                )
+                              : Text(
+                                  widget.taskList.educationCenterDescription,
+                                  textAlign: TextAlign.end,
+                                ),
+                        ),
+                        onTap: () {
+                          var controller = TextEditingController();
+                          controller.text =
+                              widget.taskList.educationCenterDescription;
+                          textEditorBottomPopup(
+                              controller: controller,
+                              minLines: 3,
+                              maxLines: 5,
+                              height: 220,
+                              type: 'educationCenterDescription');
+                        },
+                      ),
+                      ListTile(
+                        leading: Text("Date created"),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            widget.taskList.dateCreated
+                                .toString()
+                                .substring(0, 16),
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Card(
+                  child: Container(
+                    child: Wrap(children: children),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void changeValues({required String type, required var value}) {
+    setState(() {
+      switch (type) {
+        case "name":
+          widget.taskList.name = value.toString();
+          valueUpdated();
+          break;
+        case "description":
+          widget.taskList.description = value.toString();
+          valueUpdated();
+          break;
+        case "delete":
+          widget.mainUser.taskLists.remove(value as TaskList);
+          valueUpdated();
+          break;
+        case "educationCenter":
+        case "educationCenterDescription":
+      }
+    });
+  }
+
+  void valueUpdated() {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Filed updated"),
+      action: SnackBarAction(
+        label: 'Ok',
+        onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+      ),
+    ));
+  }
+
+  Future<void> textEditorBottomPopup({
+    required TextEditingController controller,
+    required int minLines,
+    required int maxLines,
+    required height,
+    required String type,
+  }) {
+    return showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Container(
+              height: height,
+              child: Padding(
+                padding: const EdgeInsets.all(30),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.clear),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          TextField(
+                            scrollController: ScrollController(),
+                            minLines: minLines,
+                            maxLines: maxLines,
+                            autofocus: true,
+                            controller: controller,
+                            textAlign: TextAlign.center,
+                            decoration: InputDecoration.collapsed(
+                                hintText: 'Title',
+                                hintStyle: TextStyle(
+                                  fontSize: 22,
+                                )),
+                            style: TextStyle(fontSize: 25),
+                          ),
+                          Spacer(),
+                          Text(
+                            "Select a title for you task and type it",
+                            style:
+                                TextStyle(fontSize: 15, color: Colors.black87),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          changeValues(type: type, value: controller.text);
+                        });
+                        Navigator.pop(context);
+                      },
+                    )
+                  ],
+                ),
+              ),
+            );
+          });
+        });
+  }
+}
