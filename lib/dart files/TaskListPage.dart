@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:timeago_flutter/timeago_flutter.dart';
 import '../classes/Task.dart';
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
 import 'dart:math';
-
-import 'TaskItem.dart';
 import 'TaskPage.dart';
 
 class TaskListPage extends StatefulWidget {
@@ -74,52 +73,6 @@ class _TaskListPageState extends State<TaskListPage> {
                       child: Slidable(
                         closeOnScroll: true,
                         key: UniqueKey(),
-                        child: ListTile(
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TaskPage(task: task,mainUser: widget.mainUser,taskList: widget.taskList,))),
-                          subtitle: Wrap(spacing: 5, children: [
-                            Timeago(
-                                builder: (context, value) => Text(value + ', '),
-                                date: task.dateCreated),
-                            Text(
-                                task.description.split('\n').elementAt(0)
-                                    + (task.description.split('\n').length > 1 ? "..." : "")
-                            ),
-                          ]),
-                          leading:  Ink(
-                            decoration: ShapeDecoration(
-                                shape: CircleBorder(),
-                                color: Colors.white
-                            ),
-                            child: IconButton(
-                              icon: Icon(
-                                task.done
-                                    ? Icons.check_circle
-                                    : Icons.radio_button_unchecked,
-                                color: Colors.green,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  task.done = !task.done;
-                                });
-                              },
-                            ),
-                          ),
-                          trailing: CircleAvatar(
-                            backgroundImage:
-                            const AssetImage("avatar.png"),
-                          ),
-                          title: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5),
-                            child: Text(
-                              task.title,
-                              style: TextStyle(
-                                  decoration: task.done
-                                      ? TextDecoration.lineThrough
-                                      : null),
-                            ),
-                          ),
-                          tileColor: task.done ? Colors.black12 : null,
-                        ),
                         startActionPane: ActionPane(
                           motion: DrawerMotion(),
                           dismissible: DismissiblePane(
@@ -147,14 +100,39 @@ class _TaskListPageState extends State<TaskListPage> {
                           children: [
                             SlidableAction(
                               // An action can be bigger than the others.
-                              onPressed: (context) {},
-                              backgroundColor: Color(0xFF7BC043),
+                              onPressed: (context) {
+                                setState(() => task.stared = !task.stared);
+                                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                  content: Text(task.stared? "Task set as stared":"Task Not set as stared"),
+                                  action: SnackBarAction(
+                                    label: "Ok",
+                                    onPressed: () {
+                                      ScaffoldMessenger.of(context)
+                                          .hideCurrentSnackBar();
+                                    },
+                                  ),
+                                ));
+                              },
+                              backgroundColor: Colors.orange,
                               foregroundColor: Colors.white,
-                              icon: Icons.archive,
-                              label: 'Archive',
+                              icon: Icons.star,
+                              label: 'Star',
                             ),
                             SlidableAction(
-                              onPressed: (context) {},
+                              onPressed: (context) {
+                                Share.share('I have a Task on ' +
+                                    task.deadline.day.toString() +
+                                    ' of ' +
+                                    task.deadline.month.toString() +
+                                    ', ' +
+                                    task.deadline.year.toString() +
+                                    " named as " +
+                                    task.title +
+                                    ":\n" +
+                                    task.description);
+                              },
                               backgroundColor: Colors.purple,
                               foregroundColor: Colors.white,
                               icon: Icons.share,
@@ -162,8 +140,69 @@ class _TaskListPageState extends State<TaskListPage> {
                             ),
                           ],
                         ),
-                      )
-                  );
+                        child: ListTile(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => TaskPage(
+                                        task: task,
+                                        mainUser: widget.mainUser,
+                                        taskList: widget.taskList,
+                                      ))),
+                          subtitle: Wrap(spacing: 5, children: [
+                            Timeago(
+                                builder: (context, value) => Text(value + ', '),
+                                date: task.dateCreated),
+                            Text(task.description.split('\n').elementAt(0) +
+                                (task.description.split('\n').length > 1
+                                    ? "..."
+                                    : "")),
+                          ]),
+                          leading: Ink(
+                            decoration: ShapeDecoration(
+                                shape: CircleBorder(), color: Colors.white),
+                            child: IconButton(
+                              icon: Icon(
+                                task.done
+                                    ? Icons.check_circle
+                                    : Icons.radio_button_unchecked,
+                                color: Colors.green,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  task.done = !task.done;
+                                });
+                              },
+                            ),
+                          ),
+                          trailing: const CircleAvatar(
+                            backgroundImage: AssetImage("avatar.png"),
+                          ),
+                          title: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Wrap(spacing: 8, children: [
+                              Text(
+                                task.title,
+                                style: TextStyle(
+                                    decoration: task.done
+                                        ? TextDecoration.lineThrough
+                                        : null),
+                              ),
+                              task.stared
+                                  ? Transform.rotate(
+                                      angle: pi,
+                                      child: Icon(
+                                        Icons.star,
+                                        color: Colors.orange,
+                                        size: 20,
+                                      ),
+                                    )
+                                  : Text("")
+                            ]),
+                          ),
+                          tileColor: task.done ? Colors.black12 : null,
+                        ),
+                      ));
                 },
               ),
             ),
@@ -284,8 +323,9 @@ class _TaskListPageState extends State<TaskListPage> {
         break;
     }
   }
-  void addTask(Task task){
-    setState((){
+
+  void addTask(Task task) {
+    setState(() {
       widget.taskList.tasks.add(task);
       // widget.taskList.sortTasksInDate();
     });
@@ -299,10 +339,12 @@ class _TaskListPageState extends State<TaskListPage> {
     scaffold.showSnackBar(
       SnackBar(
         content: const Text('Task deleted'),
-        action: SnackBarAction(label: 'UNDO', onPressed: () {
-          scaffold.hideCurrentSnackBar;
-          addTask(undo);
-        }),
+        action: SnackBarAction(
+            label: 'UNDO',
+            onPressed: () {
+              scaffold.hideCurrentSnackBar;
+              addTask(undo);
+            }),
       ),
     );
   }

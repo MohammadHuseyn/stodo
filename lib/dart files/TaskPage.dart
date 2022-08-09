@@ -1,5 +1,4 @@
-import 'dart:html';
-
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../classes/Task.dart';
@@ -69,23 +68,116 @@ class _TaskPageState extends State<TaskPage> {
           IconButton(
             icon: Icon(
               Icons.delete,
-              color: Colors.red,
+              color: Colors.white,
             ),
             onPressed: () {
-              setState(() {
-                changeValues(type: "delete", value: widget.task);
-              });
+              bool sure = false;
+
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return StatefulBuilder(
+                      builder: (context, setState) {
+                        return AlertDialog(
+                          title: Center(
+                              child: Text(
+                                  'Are you sure you want to delete this task?')),
+                          actions: <Widget>[
+                            ElevatedButton(
+                              onPressed: () => Navigator.pop(context),
+                              // Closes the dialog
+                              child: Text('No'),
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 88, vertical: 15),
+                                  primary: Colors.indigo),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                changeValues(
+                                    type: "delete", value: widget.task);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => TaskListPage(
+                                            taskList: widget.taskList,
+                                            mainUser: widget.mainUser)));
+
+                                scaffoldMessenger.hideCurrentSnackBar();
+                                scaffoldMessenger.showSnackBar(SnackBar(
+                                  content: Text("Task deleted successfully"),
+                                  action: SnackBarAction(
+                                    label: 'Ok',
+                                    onPressed: () =>
+                                        scaffoldMessenger.hideCurrentSnackBar(),
+                                  ),
+                                ));
+                              },
+                              child: Text('Yes'),
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 88, vertical: 15),
+                                  primary: Colors.deepOrange),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  });
             },
-          )
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          IconButton(
+              icon: Icon(Icons.share),
+              onPressed: () {
+                Share.share('I have a Task on ' +
+                    widget.task.deadline.day.toString() +
+                    ' of ' +
+                    widget.task.deadline.month.toString() +
+                    ', ' +
+                    widget.task.deadline.year.toString() +
+                    " named as " +
+                    widget.task.title +
+                    ":\n" +
+                    widget.task.description);
+              }),
+          SizedBox(
+            width: 10,
+          ),
+          IconButton(
+              onPressed: () {
+                setState(() => widget.task.stared = !widget.task.stared);
+
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(widget.task.stared? "Task set as stared":"Task Not set as stared"),
+                  action: SnackBarAction(
+                    label: "Ok",
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    },
+                  ),
+                ));
+              },
+              icon: Icon(widget.task.stared ? Icons.star : Icons.star_border))
         ],
-      leading: IconButton(
+        leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: (){
+          onPressed: () {
             Navigator.pop(context);
             Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (context) => TaskListPage(mainUser: widget.mainUser, taskList: widget.taskList)));
-            },
-      ),
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TaskListPage(
+                        mainUser: widget.mainUser, taskList: widget.taskList)));
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -116,8 +208,11 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                 ),
                 Card(
+                  // shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(50)),
                   child: ListTile(
-                    tileColor: widget.task.done ? Colors.green : Colors.indigo,
+                    tileColor:
+                        widget.task.done ? Colors.green[800] : Colors.indigo,
                     title: Center(
                         child: Padding(
                       child: (widget.task.done
@@ -149,6 +244,11 @@ class _TaskPageState extends State<TaskPage> {
                       scaffoldMessenger.showSnackBar(SnackBar(
                         content: Text("Task set as " +
                             (widget.task.done ? "Done" : "Undone")),
+                        action: SnackBarAction(
+                          label: 'Ok',
+                          onPressed: () =>
+                              scaffoldMessenger.hideCurrentSnackBar(),
+                        ),
                       ));
                     },
                   ),
@@ -226,7 +326,7 @@ class _TaskPageState extends State<TaskPage> {
                               if (time != null) {
                                 deadline = DateTime(value.year, value.month,
                                     value.day, time.hour, time.minute);
-                                setState((){
+                                setState(() {
                                   changeValues(type: "date", value: deadline);
                                 });
                               }
@@ -259,26 +359,40 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   void changeValues({required String type, required var value}) {
-    ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
     setState(() {
       switch (type) {
         case "title":
           widget.task.title = value.toString();
+          valueUpdated();
           break;
         case "description":
           widget.task.description = value.toString();
+          valueUpdated();
           break;
         case "date":
           widget.task.deadline = value;
+          valueUpdated();
           break;
         case "delete":
+          widget.taskList.tasks.remove(value as Task);
+          valueUpdated();
       }
     });
   }
 
+  void valueUpdated() {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Filed updated"),
+      action: SnackBarAction(
+        label: 'Ok',
+        onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+      ),
+    ));
+  }
+
   void addTask(Task task) {
     setState(() {
-      // scaffoldMessenger.removeCurrentSnackBar();
       widget.taskList.tasks.add(task);
       Navigator.push(
           context,
@@ -287,7 +401,6 @@ class _TaskPageState extends State<TaskPage> {
                   task: task,
                   mainUser: widget.mainUser,
                   taskList: widget.taskList)));
-      // scaffoldMessenger.showSnackBar(SnackBar(content: Text("Task added")));
     });
   }
 
@@ -327,7 +440,7 @@ class _TaskPageState extends State<TaskPage> {
                             autofocus: true,
                             controller: controller,
                             textAlign: TextAlign.center,
-                            decoration: new InputDecoration.collapsed(
+                            decoration: InputDecoration.collapsed(
                                 hintText: 'Title',
                                 hintStyle: TextStyle(
                                   fontSize: 22,
@@ -349,7 +462,7 @@ class _TaskPageState extends State<TaskPage> {
                         color: Colors.green,
                       ),
                       onPressed: () {
-                        setState((){
+                        setState(() {
                           changeValues(type: type, value: controller.text);
                         });
                         Navigator.pop(context);

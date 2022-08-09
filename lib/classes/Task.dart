@@ -7,6 +7,8 @@ class Task {
       DateTime.now().millisecond.toString() + Random().nextInt(1000).toString();
 
   bool done = false;
+  bool stared = false;
+
   List<User> tagged = [];
   final DateTime dateCreated = DateTime.now();
   late DateTime deadline;
