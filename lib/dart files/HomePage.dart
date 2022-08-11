@@ -3,17 +3,18 @@ import 'package:stodo/dart%20files/TaskListPage.dart';
 
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
+import '../classes/Users.dart';
 import 'AddTaskList.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
     Key? key,
     required this.title,
-    required this.mainUser,
+    required this.mainUserId,
   }) : super(key: key);
 
   final String title;
-  final User mainUser;
+  final String mainUserId;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -22,6 +23,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    // print(widget.mainUserId);
+    User mainUser = Users.users[widget.mainUserId]!;
     return Scaffold(
         resizeToAvoidBottomInset: false,
         floatingActionButton: FloatingActionButton(
@@ -32,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        AddTaskList(mainUser: widget.mainUser)));
+                        AddTaskList(mainUserId: widget.mainUserId)));
           },
         ),
         drawerEdgeDragWidth: MediaQuery.of(context).size.width,
@@ -203,14 +206,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () => showSearch(
                     context: context,
                     delegate: HomePageSearchDelegate(
-                        taskLists: widget.mainUser.taskLists)),
+                        taskLists: mainUser.taskLists)),
                 icon: Icon(Icons.search_rounded))
           ],
         ),
         body: Container(
           height: MediaQuery.of(context).size.height,
           child: ListView.builder(
-            itemCount: widget.mainUser.taskLists.length,
+            itemCount: mainUser.taskLists.length,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {},
@@ -221,20 +224,20 @@ class _MyHomePageState extends State<MyHomePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => TaskListPage(
-                                    taskList: widget.mainUser.taskLists
+                                    taskList: mainUser.taskLists
                                         .elementAt(index),
-                                    mainUser: widget.mainUser,
+                                    mainUserId: widget.mainUserId,
                                   ))),
                       title: Text(
-                        widget.mainUser.taskLists.elementAt(index).name,
+                        mainUser.taskLists.elementAt(index).name,
                         style: TextStyle(fontSize: 18),
                       ),
-                      subtitle: Text(widget.mainUser.taskLists
+                      subtitle: Text(mainUser.taskLists
                               .elementAt(index)
                               .description
                               .split('\n')
                               .elementAt(0) +
-                          (widget.mainUser.taskLists
+                          (mainUser.taskLists
                                       .elementAt(index)
                                       .description
                                       .split('\n')
@@ -247,7 +250,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: <Widget>[
                           Text(
-                            widget.mainUser.taskLists
+                            mainUser.taskLists
                                 .elementAt(index)
                                 .users
                                 .length

@@ -4,15 +4,16 @@ import 'package:flutter/material.dart';
 import '../classes/Task.dart';
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
+import '../classes/Users.dart';
 import 'TaskListPage.dart';
 
 class TaskPage extends StatefulWidget {
   Task task;
   TaskList taskList;
-  User mainUser;
+  String mainUserId;
 
   TaskPage(
-      {required this.task, required this.mainUser, required this.taskList});
+      {required this.task, required this.mainUserId, required this.taskList});
 
   @override
   State<TaskPage> createState() => _TaskPageState();
@@ -21,6 +22,7 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
   @override
   Widget build(BuildContext context) {
+    // print(widget.mainUserId);
     ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
     final children = <Widget>[
       Center(
@@ -45,6 +47,10 @@ class _TaskPageState extends State<TaskPage> {
             title: Text(
               widget.task.tagged.elementAt(i).firstname,
               textAlign: TextAlign.center,
+            ),
+            trailing: IconButton(
+              icon: Icon(Icons.remove_circle_outline,color: Colors.red,),
+              onPressed: (){print(widget.mainUserId + " sdsj " + widget.task.ownerId);},
             ),
           ),
         ),
@@ -130,7 +136,7 @@ class _TaskPageState extends State<TaskPage> {
                                     MaterialPageRoute(
                                         builder: (context) => TaskListPage(
                                             taskList: widget.taskList,
-                                            mainUser: widget.mainUser)));
+                                            mainUserId: widget.mainUserId)));
 
                                 scaffoldMessenger.hideCurrentSnackBar();
                                 scaffoldMessenger.showSnackBar(SnackBar(
@@ -197,7 +203,7 @@ class _TaskPageState extends State<TaskPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => TaskListPage(
-                        mainUser: widget.mainUser, taskList: widget.taskList)));
+                        mainUserId: widget.mainUserId, taskList: widget.taskList)));
           },
         ),
       ),
@@ -223,7 +229,7 @@ class _TaskPageState extends State<TaskPage> {
                               style: TextStyle(color: Colors.black54),
                             ),
                             TextSpan(
-                                text: widget.task.owner.firstname,
+                                text: Users.users[widget.task.ownerId]!.firstname,
                                 style: TextStyle(color: Colors.black))
                           ]),
                         ),
@@ -427,7 +433,7 @@ class _TaskPageState extends State<TaskPage> {
           MaterialPageRoute(
               builder: (context) => TaskPage(
                   task: task,
-                  mainUser: widget.mainUser,
+                  mainUserId: widget.mainUserId,
                   taskList: widget.taskList)));
     });
   }

@@ -5,11 +5,12 @@ import 'package:stodo/dart%20files/HomePage.dart';
 import 'package:stodo/main.dart';
 
 import '../classes/User.dart';
+import '../classes/Users.dart';
 
 class AddTaskList extends StatefulWidget {
-  AddTaskList({required this.mainUser});
+  AddTaskList({required this.mainUserId});
 
-  User mainUser;
+  String mainUserId;
 
   @override
   State<AddTaskList> createState() => _AddTaskListState();
@@ -23,6 +24,7 @@ class _AddTaskListState extends State<AddTaskList> {
 
   @override
   Widget build(BuildContext context) {
+    // print(widget.mainUserId);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -138,14 +140,14 @@ class _AddTaskListState extends State<AddTaskList> {
                           educationCenter: educationCenterController.text,
                           educationCenterDescription:
                               educationCenterController.text,
-                          creator: widget.mainUser,
+                          creatorId: widget.mainUserId,
                           description: descriptionController.text);
                       setStateNewTaskList(list);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => MyHomePage(
-                                  title: "Stodo", mainUser: widget.mainUser)));
+                                  title: "Stodo", mainUserId: widget.mainUserId)));
                     }
                   },
                 ),
@@ -157,7 +159,7 @@ class _AddTaskListState extends State<AddTaskList> {
 
   void setStateNewTaskList(TaskList list) {
     setState(() {
-      widget.mainUser.taskLists.add(list);
+      Users.users[widget.mainUserId]!.taskLists.add(list);
     });
   }
 }

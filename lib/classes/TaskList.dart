@@ -1,4 +1,6 @@
 import 'dart:math' show Random;
+import 'package:stodo/classes/Users.dart';
+
 import 'User.dart';
 import 'Task.dart';
 
@@ -15,7 +17,7 @@ class TaskList {
   late String educationCenter;
   late String name;
   late String description;
-  late User creator;
+  late String creatorId;
 
   String get getId => _id;
 
@@ -29,8 +31,8 @@ class TaskList {
       {required this.name,
       required this.educationCenter,
       required this.educationCenterDescription,
-      required this.creator,
+      required this.creatorId,
       required this.description}) {
-    users.add(creator);
+    users.add(Users.users[creatorId]!);
   }
 }

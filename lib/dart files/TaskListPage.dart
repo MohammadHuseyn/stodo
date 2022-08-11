@@ -11,10 +11,10 @@ import 'dart:math';
 import 'TaskPage.dart';
 
 class TaskListPage extends StatefulWidget {
-  TaskListPage({required this.taskList, required this.mainUser});
+  TaskListPage({required this.taskList, required this.mainUserId,});
 
   TaskList taskList;
-  User mainUser;
+  String mainUserId;
 
   @override
   State<TaskListPage> createState() => _TaskListPageState();
@@ -23,6 +23,7 @@ class TaskListPage extends StatefulWidget {
 class _TaskListPageState extends State<TaskListPage> {
   @override
   Widget build(BuildContext context) {
+    // print(widget.mainUserId);
     // widget.taskList.sortTasksInDate();
     var titleC = TextEditingController(), descC = TextEditingController();
     // var focusNode = FocusNode();
@@ -48,7 +49,7 @@ class _TaskListPageState extends State<TaskListPage> {
               context,
               MaterialPageRoute(
                   builder: (context) => TaskListInformationPage(
-                      mainUser: widget.mainUser, taskList: widget.taskList)),
+                      mainUserId: widget.mainUserId, taskList: widget.taskList)),
             ),
           ),
         ),
@@ -157,7 +158,7 @@ class _TaskListPageState extends State<TaskListPage> {
                               MaterialPageRoute(
                                   builder: (context) => TaskPage(
                                         task: task,
-                                        mainUser: widget.mainUser,
+                                        mainUserId: widget.mainUserId,
                                         taskList: widget.taskList,
                                       ))),
                           subtitle: Wrap(spacing: 5, children: [
@@ -258,7 +259,7 @@ class _TaskListPageState extends State<TaskListPage> {
                                       newTask = new Task(
                                           title: titleC.text,
                                           description: '',
-                                          owner: widget.mainUser);
+                                          ownerId: widget.mainUserId);
                                     });
                                     Navigator.pop(context);
 

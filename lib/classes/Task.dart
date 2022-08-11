@@ -1,6 +1,7 @@
 import 'dart:math' show Random;
 
 import 'User.dart';
+import 'Users.dart';
 
 class Task {
   final String _id =
@@ -14,16 +15,16 @@ class Task {
   late DateTime deadline;
   late String title;
   late String description;
-  late User owner;
+  late String ownerId;
 
   String get getId => _id;
 
   Task({
     required this.title,
     required this.description,
-    required this.owner,
+    required this.ownerId,
   }){
-    tagged.add(owner);
+    tagged.add(Users.users[ownerId]!);
     DateTime now = DateTime.now();
     deadline = DateTime(now.year,now.month,now.day + 1,now.hour,now.minute,now.second);
   }

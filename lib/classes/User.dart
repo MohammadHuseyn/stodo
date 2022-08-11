@@ -1,6 +1,7 @@
 import 'dart:math' show Random;
 
 import 'package:stodo/classes/TaskList.dart';
+import 'package:stodo/classes/Users.dart';
 
 class User {
   final String _id =
@@ -43,5 +44,8 @@ class User {
     required this.firstname,
     required this.lastname,
     required this.username,
-  });
+  }){
+    Users.users[_id] = this;
+    // print("User " + this.firstname + " with id " + this.getId + " added");
+  }
 }

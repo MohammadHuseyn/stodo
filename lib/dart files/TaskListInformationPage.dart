@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 import '../classes/Task.dart';
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
+import '../classes/Users.dart';
 import 'HomePage.dart';
 import 'TaskListPage.dart';
 
 class TaskListInformationPage extends StatefulWidget {
   TaskList taskList;
-  User mainUser;
+  String mainUserId;
 
-  TaskListInformationPage({required this.mainUser, required this.taskList});
+  TaskListInformationPage({required this.mainUserId, required this.taskList});
 
   @override
   State<TaskListInformationPage> createState() =>
@@ -21,6 +22,7 @@ class TaskListInformationPage extends StatefulWidget {
 class _TaskListInformationPageState extends State<TaskListInformationPage> {
   @override
   Widget build(BuildContext context) {
+    // print(widget.mainUserId);
     ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
     final children = <Widget>[
       Center(
@@ -127,7 +129,7 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => MyHomePage(
-                                              mainUser: widget.mainUser,
+                                              mainUserId: widget.mainUserId,
                                               title: 'Stodo',
                                             )));
 
@@ -170,7 +172,7 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => TaskListPage(
-                        mainUser: widget.mainUser, taskList: widget.taskList)));
+                        mainUserId: widget.mainUserId, taskList: widget.taskList)));
           },
         ),
       ),
@@ -196,7 +198,7 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                               style: TextStyle(color: Colors.black54),
                             ),
                             TextSpan(
-                                text: widget.taskList.creator.firstname,
+                                text: Users.users[widget.taskList.creatorId]!.firstname,
                                 style: TextStyle(color: Colors.black))
                           ]),
                         ),
@@ -339,7 +341,7 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
           valueUpdated();
           break;
         case "delete":
-          widget.mainUser.taskLists.remove(value as TaskList);
+          Users.users[widget.mainUserId]!.taskLists.remove(value as TaskList);
           valueUpdated();
           break;
         case "educationCenter":
