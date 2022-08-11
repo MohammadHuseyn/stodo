@@ -31,7 +31,6 @@ class User {
     return false;
   }
 
-  
   void addFriend(User friend) {
     _friends.add(friend);
   }
@@ -44,8 +43,8 @@ class User {
     required this.firstname,
     required this.lastname,
     required this.username,
-  }){
-    Users.users[_id] = this;
-    // print("User " + this.firstname + " with id " + this.getId + " added");
+  }) {
+      Users.users[_id] = this;
+    // print("users length: " + Users.users.length.toString() + " " + this.username + " " + usernames.contains(username).toString());
   }
 }

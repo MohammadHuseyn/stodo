@@ -1,13 +1,12 @@
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../classes/Task.dart';
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
 import '../classes/Users.dart';
 import 'HomePage.dart';
 import 'TaskListPage.dart';
-
+import 'dart:math';
 class TaskListInformationPage extends StatefulWidget {
   TaskList taskList;
   String mainUserId;
@@ -23,6 +22,7 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
   @override
   Widget build(BuildContext context) {
     // print(widget.mainUserId);
+    User mainUser = Users.users[widget.mainUserId]!;
     ScaffoldMessengerState scaffoldMessenger = ScaffoldMessenger.of(context);
     final children = <Widget>[
       Center(
@@ -48,6 +48,22 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
               widget.taskList.users.elementAt(i).firstname,
               textAlign: TextAlign.center,
             ),
+            trailing:
+            (!(widget.taskList.creatorId == widget.mainUserId)
+                && widget.taskList.users.elementAt(i).getId == widget.mainUserId)?
+            IconButton(
+              icon: Icon(Icons.remove_circle_outline,color: Colors.red,),
+              onPressed: (){
+                // print(widget.mainUserId + " ::: " + widget.task.ownerId);
+                setState((){
+                  widget.taskList.users.removeAt(i);
+                  scaffoldMessenger.hideCurrentSnackBar();
+                  scaffoldMessenger.showSnackBar(
+                      SnackBar(content: Text("Tagged user removed"))
+                  );
+                });
+              },
+            ) : null,
           ),
         ),
       );
@@ -83,7 +99,91 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
           ],
         ),
       ),
-      onTap: () {},
+      onTap: () {
+        scaffoldMessenger.hideCurrentSnackBar();
+        mainUser.getFriends.isEmpty
+            ? scaffoldMessenger.showSnackBar(const SnackBar(
+            content: Text("You haven't add any friends, request them.")))
+            : showModalBottomSheet(
+            isScrollControlled: true,
+            context: context,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20))),
+            builder: (context) {
+              return StatefulBuilder(builder: (context, setState) {
+                return SingleChildScrollView(
+                  child: SizedBox(
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.5,
+                    child: Column(
+                      children: [
+                        IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Transform.rotate(
+                                angle: -0.5 * pi,
+                                child: const Icon(
+                                  Icons.arrow_back_ios_new,
+                                  size: 25,
+                                ))
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: mainUser.getFriends.length,
+                            itemBuilder: (context, index) {
+                              User user =
+                              mainUser.getFriends.elementAt(index);
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: ListTile(
+                                  leading: const CircleAvatar(
+                                    radius: 25,
+                                    backgroundImage:
+                                    AssetImage("assets/avatar.png"),
+                                  ),
+                                  title: Text(
+                                    user.firstname,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  trailing: IconButton(
+                                    icon: Icon(
+                                      Icons.add_circle,
+                                      color: widget.taskList.users
+                                          .contains(user)
+                                          ? Colors.green
+                                          : null,
+                                      size: 35,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        addUserFunc(user);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: FloatingActionButton(
+                                child: Icon(Icons.person_add),
+                                onPressed: () {}),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              });
+            });
+      },
     ));
     children.add(SizedBox(
       height: 70,
@@ -426,5 +526,13 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
             );
           });
         });
+  }
+
+  void addUserFunc(User user) {
+      setState(() {
+        widget.taskList.users.contains(user)
+            ? widget.taskList.users.remove(user)
+            : widget.taskList.users.add(user);
+      });
   }
 }
