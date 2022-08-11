@@ -27,6 +27,7 @@ class _TaskListPageState extends State<TaskListPage> {
     var titleC = TextEditingController(), descC = TextEditingController();
     // var focusNode = FocusNode();
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Padding(
@@ -186,7 +187,7 @@ class _TaskListPageState extends State<TaskListPage> {
                             ),
                           ),
                           trailing: const CircleAvatar(
-                            backgroundImage: AssetImage("avatar.png"),
+                            backgroundImage: AssetImage("assets/avatar.png"),
                           ),
                           title: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
@@ -233,6 +234,7 @@ class _TaskListPageState extends State<TaskListPage> {
                 onPressed: () {
                   showModalBottomSheet(
                       context: context,
+                      isScrollControlled: true,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(20),
@@ -262,6 +264,7 @@ class _TaskListPageState extends State<TaskListPage> {
 
                                     showModalBottomSheet(
                                         context: context,
+                                        isScrollControlled: true,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(20),
@@ -364,37 +367,40 @@ class _TaskListPageState extends State<TaskListPage> {
       required IconButton iconButtonBefore,
       required String subject,
       required String hint}) {
-    return Container(
-      height: 120,
-      child: Padding(
-        padding: const EdgeInsets.all(30),
-        child: Row(
-          children: [
-            iconButtonBefore,
-            Expanded(
-              child: Column(
-                children: [
-                  TextField(
-                    autofocus: true,
-                    controller: controller,
-                    textAlign: TextAlign.center,
-                    decoration: new InputDecoration.collapsed(
-                        hintText: subject,
-                        hintStyle: TextStyle(
-                          fontSize: 22,
-                        )),
-                    style: TextStyle(fontSize: 25),
-                  ),
-                  Spacer(),
-                  Text(
-                    hint,
-                    style: TextStyle(fontSize: 15, color: Colors.black87),
-                  ),
-                ],
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Container(
+        height: 120,
+        child: Padding(
+          padding: const EdgeInsets.all(30),
+          child: Row(
+            children: [
+              iconButtonBefore,
+              Expanded(
+                child: Column(
+                  children: [
+                    TextField(
+                      autofocus: true,
+                      controller: controller,
+                      textAlign: TextAlign.center,
+                      decoration: new InputDecoration.collapsed(
+                          hintText: subject,
+                          hintStyle: TextStyle(
+                            fontSize: 22,
+                          )),
+                      style: TextStyle(fontSize: 25),
+                    ),
+                    Spacer(),
+                    Text(
+                      hint,
+                      style: TextStyle(fontSize: 13, color: Colors.black87),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            iconButtonAfter
-          ],
+              iconButtonAfter
+            ],
+          ),
         ),
       ),
     );

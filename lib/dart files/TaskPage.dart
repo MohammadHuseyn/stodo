@@ -39,7 +39,8 @@ class _TaskPageState extends State<TaskPage> {
           padding: const EdgeInsets.only(top: 10),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundImage: AssetImage("avatar.png"),
+              radius: 25,
+              backgroundImage: AssetImage("assets/avatar.png"),
             ),
             title: Text(
               widget.task.tagged.elementAt(i).firstname,
@@ -60,31 +61,35 @@ class _TaskPageState extends State<TaskPage> {
     children.add(SizedBox(
       height: 70,
     ));
-    children.add(
-      ListTile(
-        tileColor: Colors.green[800],
-        title: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Tag someone",style: TextStyle(color: Colors.white),),
-              SizedBox(width: 10,),
-              Icon(Icons.add_circle,color: Colors.white,)
-            ],
-          ),
+    children.add(ListTile(
+      tileColor: Colors.green[800],
+      title: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Tag someone",
+              style: TextStyle(color: Colors.white),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Icon(
+              Icons.add_circle,
+              color: Colors.white,
+            )
+          ],
         ),
-        onTap: (){
-
-        },
-      )
-    );
+      ),
+      onTap: () {},
+    ));
     children.add(SizedBox(
       height: 70,
     ));
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(widget.task.title),
-        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(
@@ -110,7 +115,7 @@ class _TaskPageState extends State<TaskPage> {
                               child: Text('No'),
                               style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 88, vertical: 15),
+                                      horizontal: 42, vertical: 15),
                                   primary: Colors.indigo),
                             ),
                             ElevatedButton(
@@ -140,7 +145,7 @@ class _TaskPageState extends State<TaskPage> {
                               child: Text('Yes'),
                               style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 88, vertical: 15),
+                                      horizontal: 40, vertical: 15),
                                   primary: Colors.deepOrange),
                             ),
                           ],
@@ -149,9 +154,6 @@ class _TaskPageState extends State<TaskPage> {
                     );
                   });
             },
-          ),
-          SizedBox(
-            width: 10,
           ),
           IconButton(
               icon: Icon(Icons.share),
@@ -167,9 +169,6 @@ class _TaskPageState extends State<TaskPage> {
                     ":\n" +
                     widget.task.description);
               }),
-          SizedBox(
-            width: 10,
-          ),
           IconButton(
               onPressed: () {
                 setState(() => widget.task.stared = !widget.task.stared);
@@ -187,7 +186,7 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                 ));
               },
-              icon: Icon(widget.task.stared ? Icons.star : Icons.star_border))
+              icon: Icon(widget.task.stared ? Icons.star : Icons.star_border),color: Colors.orange,)
         ],
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -213,7 +212,7 @@ class _TaskPageState extends State<TaskPage> {
                     padding: const EdgeInsets.all(10),
                     child: ListTile(
                       leading: CircleAvatar(
-                        backgroundImage: AssetImage("avatar.png"),
+                        backgroundImage: AssetImage("assets/avatar.png"),
                         radius: 30,
                       ),
                       title: Center(
@@ -223,7 +222,9 @@ class _TaskPageState extends State<TaskPage> {
                               text: "owner: ",
                               style: TextStyle(color: Colors.black54),
                             ),
-                            TextSpan(text: widget.task.owner.firstname)
+                            TextSpan(
+                                text: widget.task.owner.firstname,
+                                style: TextStyle(color: Colors.black))
                           ]),
                         ),
                       ),
@@ -295,8 +296,10 @@ class _TaskPageState extends State<TaskPage> {
                               controller: controller,
                               minLines: 1,
                               maxLines: 1,
-                              height: 120,
-                              type: 'title');
+                              height: 130.0,
+                              type: 'title',
+                              hint: "Title"
+                          );
                         },
                       ),
                       ListTile(
@@ -315,8 +318,10 @@ class _TaskPageState extends State<TaskPage> {
                               controller: controller,
                               minLines: 3,
                               maxLines: 5,
-                              height: 220,
-                              type: 'description');
+                              height: 270.0,
+                              type: 'description',
+                              hint: "Description"
+                          );
                         },
                       ),
                       ListTile(
@@ -433,65 +438,61 @@ class _TaskPageState extends State<TaskPage> {
     required int maxLines,
     required height,
     required String type,
+    required String hint
   }) {
     return showModalBottomSheet(
+        isScrollControlled: true,
         context: context,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
-            return Container(
-              height: height,
-              child: Padding(
-                padding: const EdgeInsets.all(30),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.clear),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          TextField(
-                            scrollController: ScrollController(),
-                            minLines: minLines,
-                            maxLines: maxLines,
-                            autofocus: true,
-                            controller: controller,
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration.collapsed(
-                                hintText: 'Title',
-                                hintStyle: TextStyle(
-                                  fontSize: 22,
-                                )),
-                            style: TextStyle(fontSize: 25),
-                          ),
-                          Spacer(),
-                          Text(
-                            "Select a title for you task and type it",
-                            style:
-                                TextStyle(fontSize: 15, color: Colors.black87),
-                          ),
-                        ],
+            return Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Container(
+                height: height,
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.check,
-                        color: Colors.green,
+                      Expanded(
+                        child: TextField(
+                          scrollController: ScrollController(),
+                          minLines: minLines,
+                          maxLines: maxLines,
+                          autofocus: true,
+                          controller: controller,
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration.collapsed(
+                              hintText: hint,
+                              hintStyle: TextStyle(
+                                fontSize: 22,
+                              )),
+                          style: TextStyle(fontSize: 25),
+                        ),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          changeValues(type: type, value: controller.text);
-                        });
-                        Navigator.pop(context);
-                      },
-                    )
-                  ],
+                      IconButton(
+                        icon: Icon(
+                          Icons.check,
+                          color: Colors.green,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            changeValues(type: type, value: controller.text);
+                          });
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
+                  ),
                 ),
               ),
             );

@@ -4,15 +4,17 @@ import 'package:stodo/dart%20files/TaskListPage.dart';
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
 import 'AddTaskList.dart';
+
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key,
+  const MyHomePage({
+    Key? key,
     required this.title,
     required this.mainUser,
-  })
-      : super(key: key);
+  }) : super(key: key);
 
   final String title;
   final User mainUser;
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -21,22 +23,21 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        hoverColor: Colors.green,
-        child: Icon(Icons.playlist_add,size: 30),
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => AddTaskList(mainUser: widget.mainUser)));
-        },
-      ),
-        drawerEdgeDragWidth: MediaQuery
-            .of(context)
-            .size
-            .width,
+        resizeToAvoidBottomInset: false,
+        floatingActionButton: FloatingActionButton(
+          hoverColor: Colors.green,
+          child: Icon(Icons.playlist_add, size: 30),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        AddTaskList(mainUser: widget.mainUser)));
+          },
+        ),
+        drawerEdgeDragWidth: MediaQuery.of(context).size.width,
         drawer: Drawer(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width * 0.8,
+            width: MediaQuery.of(context).size.width * 0.8,
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -49,42 +50,28 @@ class _MyHomePageState extends State<MyHomePage> {
                     ]),
                     child: Column(
                       children: [
+                        SizedBox(
+                          height: 30,
+                        ),
                         Card(
                           margin: const EdgeInsets.all(25),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50)),
-                          child: Row(
-                            // crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: CircleAvatar(
-                                  minRadius:
-                                  MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width * 0.16,
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: ListTile(
+                              minLeadingWidth: 90,
+                              leading: CircleAvatar(
+                                  radius: 30,
                                   backgroundImage:
-                                  const AssetImage("avatar.png"),
-                                ),
+                                      AssetImage("assets/avatar.png")),
+                              title: Text(
+                                "Name",
+                                style: TextStyle(fontSize: 20),
                               ),
-                              SizedBox(
-                                // height: 100,
-                                width: 150,
-                                child: ListTile(
-                                  trailing: IconButton(
-                                    icon: const Icon(Icons.edit_rounded),
-                                    onPressed: () {},
-                                  ),
-                                  title: const Text(
-                                    "Name",
-                                    style: TextStyle(fontSize: 24),
-                                  ),
-                                  subtitle: const Text("username",
-                                      style: TextStyle(fontSize: 14)),
-                                ),
-                              ),
-                            ],
+                              subtitle: Text("username",
+                                  style: TextStyle(fontSize: 14)),
+                            ),
                           ),
                         ),
                         Card(
@@ -100,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("Edit profile"),
                                 trailing:
-                                const Icon(Icons.keyboard_arrow_right),
+                                    const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -110,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("New list"),
                                 trailing:
-                                const Icon(Icons.keyboard_arrow_right),
+                                    const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -120,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("All lists"),
                                 trailing:
-                                const Icon(Icons.keyboard_arrow_right),
+                                    const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -130,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("Friends"),
                                 trailing:
-                                const Icon(Icons.keyboard_arrow_right),
+                                    const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -140,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("Highlighted"),
                                 trailing:
-                                const Icon(Icons.keyboard_arrow_right),
+                                    const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -150,11 +137,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("Setting"),
                                 trailing:
-                                const Icon(Icons.keyboard_arrow_right),
+                                    const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                             ],
                           ),
+                        ),
+                        SizedBox(
+                          height: 15,
                         ),
                         Card(
                           shape: RoundedRectangleBorder(
@@ -171,7 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 hoverColor: Colors.orange,
                                 title: const Text("Invite friends"),
                                 trailing:
-                                const Icon(Icons.keyboard_arrow_right),
+                                    const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -182,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 hoverColor: Colors.green,
                                 title: const Text("Contact us"),
                                 trailing:
-                                const Icon(Icons.keyboard_arrow_right),
+                                    const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                               ListTile(
@@ -193,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 title: const Text("Log out"),
                                 trailing:
-                                const Icon(Icons.keyboard_arrow_right),
+                                    const Icon(Icons.keyboard_arrow_right),
                                 onTap: () {},
                               ),
                             ],
@@ -209,17 +199,16 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title),
           centerTitle: true,
           actions: <Widget>[
-            IconButton(onPressed: () =>
-                showSearch(
-                    context: context, delegate: HomePageSearchDelegate(taskLists: widget.mainUser.taskLists)),
+            IconButton(
+                onPressed: () => showSearch(
+                    context: context,
+                    delegate: HomePageSearchDelegate(
+                        taskLists: widget.mainUser.taskLists)),
                 icon: Icon(Icons.search_rounded))
           ],
         ),
         body: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
+          height: MediaQuery.of(context).size.height,
           child: ListView.builder(
             itemCount: widget.mainUser.taskLists.length,
             itemBuilder: (context, index) {
@@ -228,50 +217,70 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Card(
                   margin: EdgeInsets.only(left: 15, right: 15, top: 10),
                   child: ListTile(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => TaskListPage(taskList: widget.mainUser.taskLists.elementAt(index),mainUser: widget.mainUser,))),
-                      title: Text(widget.mainUser.taskLists
-                          .elementAt(index)
-                          .name, style: TextStyle(fontSize: 18),),
-                      subtitle: Text(widget.mainUser.taskLists
-                          .elementAt(index)
-                          .description.split('\n').elementAt(0) +
-                          (widget.mainUser.taskLists
-                              .elementAt(index)
-                              .description.split('\n').length > 1 ? "..." : "")
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TaskListPage(
+                                    taskList: widget.mainUser.taskLists
+                                        .elementAt(index),
+                                    mainUser: widget.mainUser,
+                                  ))),
+                      title: Text(
+                        widget.mainUser.taskLists.elementAt(index).name,
+                        style: TextStyle(fontSize: 18),
                       ),
+                      subtitle: Text(widget.mainUser.taskLists
+                              .elementAt(index)
+                              .description
+                              .split('\n')
+                              .elementAt(0) +
+                          (widget.mainUser.taskLists
+                                      .elementAt(index)
+                                      .description
+                                      .split('\n')
+                                      .length >
+                                  1
+                              ? "..."
+                              : "")),
                       trailing: Wrap(
                         spacing: 5,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: <Widget>[
-                          Text(widget.mainUser.taskLists
-                              .elementAt(index)
-                              .users
-                              .length
-                              .toString(), style: TextStyle(fontSize: 18),),
-                          Icon(Icons.people, size: 30,)
+                          Text(
+                            widget.mainUser.taskLists
+                                .elementAt(index)
+                                .users
+                                .length
+                                .toString(),
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          Icon(
+                            Icons.people,
+                            size: 30,
+                          )
                         ],
-                      )
-                  ),
+                      )),
                 ),
               );
             },
           ),
         ));
   }
-
 }
 
 class HomePageSearchDelegate extends SearchDelegate {
   HomePageSearchDelegate({required this.taskLists});
+
   List<TaskList> taskLists;
+
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(
           onPressed: () {
             query == "" ? close(context, null) : query = "";
-          }, icon: const Icon(Icons.clear)
-      )
+          },
+          icon: const Icon(Icons.clear))
     ];
   }
 
@@ -281,8 +290,7 @@ class HomePageSearchDelegate extends SearchDelegate {
         onPressed: () {
           close(context, null);
         },
-        icon: const Icon(Icons.arrow_back)
-    );
+        icon: const Icon(Icons.arrow_back));
   }
 
   @override
@@ -300,10 +308,12 @@ class HomePageSearchDelegate extends SearchDelegate {
     return Container(
       child: ListView.builder(
         itemCount: searchResults.length,
-        itemBuilder: (context, index){
+        itemBuilder: (context, index) {
           return ListTile(
-            title: Text(searchResults.elementAt(index).name,),
-            onTap: (){
+            title: Text(
+              searchResults.elementAt(index).name,
+            ),
+            onTap: () {
               query = searchResults.elementAt(index).name;
               showResults(context);
             },

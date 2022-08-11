@@ -39,7 +39,8 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
           padding: const EdgeInsets.only(top: 10),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundImage: AssetImage("avatar.png"),
+              radius: 25,
+              backgroundImage: AssetImage("assets/avatar.png"),
             ),
             title: Text(
               widget.taskList.users.elementAt(i).firstname,
@@ -86,9 +87,9 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
       height: 70,
     ));
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(widget.taskList.name),
-        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(
@@ -112,7 +113,7 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                               child: Text('No'),
                               style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 88, vertical: 15),
+                                      horizontal: 42, vertical: 15),
                                   primary: Colors.indigo),
                             ),
                             ElevatedButton(
@@ -144,7 +145,7 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                               child: Text('Yes'),
                               style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 88, vertical: 15),
+                                      horizontal: 40, vertical: 15),
                                   primary: Colors.deepOrange),
                             ),
                           ],
@@ -154,17 +155,11 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                   });
             },
           ),
-          SizedBox(
-            width: 10,
-          ),
           IconButton(
               icon: Icon(Icons.share),
               onPressed: () {
                 Share.share('I have a Task on ');
               }),
-          SizedBox(
-            width: 10,
-          ),
         ],
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -190,7 +185,7 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                     padding: const EdgeInsets.all(10),
                     child: ListTile(
                       leading: CircleAvatar(
-                        backgroundImage: AssetImage("avatar.png"),
+                        backgroundImage: AssetImage("assets/avatar.png"),
                         radius: 30,
                       ),
                       title: Center(
@@ -200,7 +195,9 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                               text: "creator: ",
                               style: TextStyle(color: Colors.black54),
                             ),
-                            TextSpan(text: widget.taskList.creator.firstname)
+                            TextSpan(
+                                text: widget.taskList.creator.firstname,
+                                style: TextStyle(color: Colors.black))
                           ]),
                         ),
                       ),
@@ -226,8 +223,9 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                               controller: controller,
                               minLines: 1,
                               maxLines: 1,
-                              height: 120,
-                              type: 'name');
+                              height: 120.0,
+                              type: 'name',
+                              hint: "Name of TaskList");
                         },
                       ),
                       ListTile(
@@ -246,12 +244,13 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                               controller: controller,
                               minLines: 3,
                               maxLines: 5,
-                              height: 220,
-                              type: 'description');
+                              height: 220.0,
+                              type: 'description',
+                              hint: "Description of TaskList");
                         },
                       ),
                       ListTile(
-                        leading: Text("ED center/Company"),
+                        leading: Text("ED center\nor Company\n"),
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Text(
@@ -266,12 +265,13 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                               controller: controller,
                               minLines: 1,
                               maxLines: 1,
-                              height: 120,
-                              type: 'educationCenter');
+                              height: 120.0,
+                              type: 'educationCenter',
+                              hint: "Education Center, Company, ...");
                         },
                       ),
                       ListTile(
-                        leading: Text("ED center/Company description"),
+                        leading: Text("ED center\nor Company\ndescription\n"),
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: widget.taskList.educationCenterDescription ==
@@ -293,8 +293,10 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                               controller: controller,
                               minLines: 3,
                               maxLines: 5,
-                              height: 220,
-                              type: 'educationCenterDescription');
+                              height: 220.0,
+                              type: 'educationCenterDescription',
+                              hint:
+                                  "Description for Education Center / Company");
                         },
                       ),
                       ListTile(
@@ -357,71 +359,66 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
     ));
   }
 
-  Future<void> textEditorBottomPopup({
-    required TextEditingController controller,
-    required int minLines,
-    required int maxLines,
-    required height,
-    required String type,
-  }) {
+  Future<void> textEditorBottomPopup(
+      {required TextEditingController controller,
+      required int minLines,
+      required int maxLines,
+      required height,
+      required String type,
+      required String hint}) {
     return showModalBottomSheet(
+        isScrollControlled: true,
         context: context,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20))),
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
-            return Container(
-              height: height,
-              child: Padding(
-                padding: const EdgeInsets.all(30),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.clear),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          TextField(
-                            scrollController: ScrollController(),
-                            minLines: minLines,
-                            maxLines: maxLines,
-                            autofocus: true,
-                            controller: controller,
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration.collapsed(
-                                hintText: 'Title',
-                                hintStyle: TextStyle(
-                                  fontSize: 22,
-                                )),
-                            style: TextStyle(fontSize: 25),
-                          ),
-                          Spacer(),
-                          Text(
-                            "Select a title for you task and type it",
-                            style:
-                                TextStyle(fontSize: 15, color: Colors.black87),
-                          ),
-                        ],
+            return Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Container(
+                height: height,
+                child: Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                       ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.check,
-                        color: Colors.green,
+                      Expanded(
+                        child: TextField(
+                          scrollController: ScrollController(),
+                          minLines: minLines,
+                          maxLines: maxLines,
+                          autofocus: true,
+                          controller: controller,
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration.collapsed(
+                              hintText: hint,
+                              hintStyle: TextStyle(
+                                fontSize: 22,
+                              )),
+                          style: TextStyle(fontSize: 25),
+                        ),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          changeValues(type: type, value: controller.text);
-                        });
-                        Navigator.pop(context);
-                      },
-                    )
-                  ],
+                      IconButton(
+                        icon: Icon(
+                          Icons.check,
+                          color: Colors.green,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            changeValues(type: type, value: controller.text);
+                          });
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
+                  ),
                 ),
               ),
             );
