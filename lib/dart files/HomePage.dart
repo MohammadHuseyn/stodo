@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:stodo/dart%20files/Profile.dart';
 import 'package:stodo/dart%20files/TaskListPage.dart';
 
 import '../classes/TaskList.dart';
@@ -60,9 +62,15 @@ class _MyHomePageState extends State<MyHomePage> {
                           margin: const EdgeInsets.all(25),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50)),
-                          child: const Padding(
+                          child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 10),
                             child: ListTile(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Profile(
+                                          mainUserId: widget.mainUserId,
+                                          userId: widget.mainUserId))),
                               minLeadingWidth: 90,
                               leading: CircleAvatar(
                                   radius: 30,
@@ -101,7 +109,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                 title: const Text("New list"),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
-                                onTap: () {},
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddTaskList(
+                                            mainUserId: widget.mainUserId))),
                               ),
                               ListTile(
                                 leading: const Icon(
@@ -165,7 +177,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                 title: const Text("Invite friends"),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
-                                onTap: () {},
+                                onTap: () {
+                                  Share.share(
+                                      "hey! have you used Stodo? try it, it's amazing!\ngithub.com/MohammadHuseyn/stodo");
+                                },
                               ),
                               ListTile(
                                 leading: const Icon(
@@ -205,8 +220,8 @@ class _MyHomePageState extends State<MyHomePage> {
             IconButton(
                 onPressed: () => showSearch(
                     context: context,
-                    delegate: HomePageSearchDelegate(
-                        taskLists: mainUser.taskLists)),
+                    delegate:
+                        HomePageSearchDelegate(taskLists: mainUser.taskLists)),
                 icon: Icon(Icons.search_rounded))
           ],
         ),
@@ -224,8 +239,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => TaskListPage(
-                                    taskList: mainUser.taskLists
-                                        .elementAt(index),
+                                    taskList:
+                                        mainUser.taskLists.elementAt(index),
                                     mainUserId: widget.mainUserId,
                                   ))),
                       title: Text(

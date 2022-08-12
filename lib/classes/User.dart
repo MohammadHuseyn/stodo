@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math' show Random;
 
 import 'package:stodo/classes/TaskList.dart';
@@ -10,12 +11,13 @@ class User {
   final DateTime dateJoined = DateTime.now();
   List<User> _friends = [];
   List<TaskList> taskLists = [];
-  late String firstname;
-  late String lastname;
+  String firstname;
+  String lastname;
   late String username;
 
   late String _password;
-  late String bio;
+  String bio = "";
+  double taskPoint = 0.0;
 
   String get getId => _id;
 
@@ -35,6 +37,13 @@ class User {
     _friends.add(friend);
   }
 
+  void removeFriend({User? friend, int? index}) {
+    if (friend == null)
+      _friends.removeAt(index!);
+    else
+      _friends.remove(friend);
+  }
+
   void setBio(String bio) {
     this.bio = bio;
   }
@@ -44,7 +53,7 @@ class User {
     required this.lastname,
     required this.username,
   }) {
-      Users.users[_id] = this;
+    Users.users[_id] = this;
     // print("users length: " + Users.users.length.toString() + " " + this.username + " " + usernames.contains(username).toString());
   }
 }
