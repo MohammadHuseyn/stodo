@@ -17,7 +17,7 @@ class User {
 
   late String _password;
   String bio = "";
-  double taskPoint = 0.0;
+  double taskPoint = 0;
 
   String get getId => _id;
 

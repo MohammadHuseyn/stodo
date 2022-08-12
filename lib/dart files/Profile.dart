@@ -73,97 +73,108 @@ class _ProfileState extends State<Profile> {
                   child: Column(
                     children: [
                       ListTile(
-                        leading: Text("Firstame"),
-                        title: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
-                            user.firstname,
-                            textAlign: TextAlign.end,
+                          leading: Text("Firstame"),
+                          title: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              user.firstname,
+                              textAlign: TextAlign.end,
+                            ),
                           ),
-                        ),
-                        onTap: () {
-                          var controller = TextEditingController();
-                          controller.text = user.firstname;
-                          textEditorBottomPopup(
-                              controller: controller,
-                              minLines: 1,
-                              maxLines: 1,
-                              height: 120.0,
-                              type: 'firstname',
-                              hint: "your firstname");
-                        },
-                      ),
+                          onTap: () {
+                            if (widget.mainUserId == widget.userId) {
+                              var controller = TextEditingController();
+                              controller.text = user.firstname;
+                              textEditorBottomPopup(
+                                  controller: controller,
+                                  minLines: 1,
+                                  maxLines: 1,
+                                  height: 120.0,
+                                  type: 'firstname',
+                                  hint: "your firstname");
+                            }
+                          }),
                       ListTile(
-                        leading: Text("Lastname"),
-                        title: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
-                            user.lastname,
-                            textAlign: TextAlign.end,
+                          leading: Text("Lastname"),
+                          title: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              user.lastname,
+                              textAlign: TextAlign.end,
+                            ),
                           ),
-                        ),
-                        onTap: () {
-                          var controller = TextEditingController();
-                          controller.text = user.lastname;
-                          textEditorBottomPopup(
-                              controller: controller,
-                              minLines: 3,
-                              maxLines: 5,
-                              height: 90.0,
-                              type: 'lastname',
-                              hint: "your lastname");
-                        },
-                      ),
+                          onTap: () {
+                            if (widget.mainUserId == widget.userId) {
+                              var controller = TextEditingController();
+                              controller.text = user.lastname;
+                              textEditorBottomPopup(
+                                  controller: controller,
+                                  minLines: 3,
+                                  maxLines: 5,
+                                  height: 90.0,
+                                  type: 'lastname',
+                                  hint: "your lastname");
+                            }
+                          }),
                       ListTile(
-                        leading: Text("\nBio\n"),
-                        title: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
-                            user.bio,
-                            textAlign: TextAlign.end,
+                          leading: Text("\nBio\n"),
+                          title: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              user.bio,
+                              textAlign: TextAlign.end,
+                            ),
                           ),
-                        ),
-                        onTap: () {
-                          var controller = TextEditingController();
-                          controller.text = user.bio;
-                          textEditorBottomPopup(
-                              controller: controller,
-                              minLines: 1,
-                              maxLines: 3,
-                              height: 220.0,
-                              type: 'bio',
-                              hint: "a biography about yourself");
-                        },
-                      ),
-                      ListTile(
-                        leading: Text("Password"),
-                        title: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
-                            "Hidden",
-                            textAlign: TextAlign.end,
-                            style: TextStyle(color: Colors.black54),
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                      ListTile(
-                        leading: Text("Number of friends"),
-                        title: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
-                            user.getFriends.length.toString(),
-                            textAlign: TextAlign.end,
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
+                          onTap: () {
+                            if (widget.mainUserId == widget.userId) {
+                              var controller = TextEditingController();
+                              controller.text = user.bio;
+                              textEditorBottomPopup(
+                                  controller: controller,
+                                  minLines: 1,
+                                  maxLines: 3,
+                                  height: 220.0,
+                                  type: 'bio',
+                                  hint: "a biography about yourself");
+                            }
+                          }),
+                      widget.mainUserId == widget.userId
+                          ? ListTile(
+                              leading: Text("Password"),
+                              title: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Text(
+                                  "Hidden",
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(color: Colors.black54),
+                                ),
+                              ),
+                              onTap: () {
+                                if (widget.mainUserId == widget.userId) {}
+                              },
+                            )
+                          : Container(),
+                      widget.mainUserId == widget.userId
+                          ? ListTile(
+                              leading: Text("Number of friends"),
+                              title: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Text(
+                                  user.getFriends.length.toString(),
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                              onTap: () {},
+                            )
+                          : Container(),
                       ListTile(
                         leading: Text("Task point"),
                         title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Text(
-                            user.taskPoint.toString(),
+                            user.taskPoint.floor().toString(),
                             textAlign: TextAlign.end,
                           ),
                         ),
@@ -186,31 +197,51 @@ class _ProfileState extends State<Profile> {
                     children: [
                       ListTile(
                         title: Center(
-                          child: Text("Share my profile"),
+                          child: Text("Share this profile"),
                         ),
                         leading: Icon(
                           Icons.share,
-                          color: Colors.green,
+                          color: Colors.blue,
                         ),
                       ),
-                      ListTile(
-                        title: Center(
-                          child: Text("Login or SignUp another account"),
-                        ),
-                        leading: Icon(
-                          Icons.login,
-                          color: Colors.orange,
-                        ),
-                      ),
-                      ListTile(
-                        title: Center(
-                          child: Text("Log Out this account"),
-                        ),
-                        leading: Icon(
-                          Icons.logout,
-                          color: Colors.red,
-                        ),
-                      )
+                      widget.mainUserId == widget.userId
+                          ? ListTile(
+                              title: Center(
+                                child: Text("Login or SignUp another account"),
+                              ),
+                              leading: Icon(
+                                Icons.login,
+                                color: Colors.orange,
+                              ),
+                            )
+                          : ListTile(
+                              title: Center(
+                                child: Text("Send friend request"),
+                              ),
+                              leading: Icon(
+                                Icons.add,
+                                color: Colors.green,
+                              ),
+                            ),
+                      widget.mainUserId == widget.userId
+                          ? ListTile(
+                              title: Center(
+                                child: Text("Log Out this account"),
+                              ),
+                              leading: Icon(
+                                Icons.logout,
+                                color: Colors.red,
+                              ),
+                            )
+                          : ListTile(
+                              title: Center(
+                                child: Text("Contact him/her"),
+                              ),
+                              leading: Icon(
+                                Icons.call,
+                                color: Colors.orange,
+                              ),
+                            )
                     ],
                   ),
                 )

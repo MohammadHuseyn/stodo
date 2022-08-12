@@ -1,6 +1,7 @@
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stodo/dart%20files/Profile.dart';
 import '../classes/Task.dart';
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
@@ -47,45 +48,34 @@ class _TaskPageState extends State<TaskPage> {
               backgroundImage: AssetImage("assets/avatar.png"),
             ),
             title: Text(
-              widget.task.tagged
-                  .elementAt(i)
-                  .firstname,
+              widget.task.tagged.elementAt(i).firstname,
               textAlign: TextAlign.center,
             ),
             trailing: (widget.task.ownerId == widget.mainUserId ||
-                widget.task.tagged
-                    .elementAt(i)
-                    .getId == widget.mainUserId)
+                    widget.task.tagged.elementAt(i).getId == widget.mainUserId)
                 ? IconButton(
-              icon: const Icon(
-                Icons.remove_circle_outline,
-                color: Colors.red,
-              ),
-              onPressed: () {
-                // print(widget.mainUserId + " ::: " + widget.task.ownerId);
-                setState(() {
-                  widget.task.tagged.removeAt(i);
-                  scaffoldMessenger.hideCurrentSnackBar();
-                  scaffoldMessenger.showSnackBar(const SnackBar(
-                      content: Text("Tagged user removed")));
-                });
-              },
-            )
+                    icon: const Icon(
+                      Icons.remove_circle_outline,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      // print(widget.mainUserId + " ::: " + widget.task.ownerId);
+                      setState(() {
+                        widget.task.tagged.removeAt(i);
+                        scaffoldMessenger.hideCurrentSnackBar();
+                        scaffoldMessenger.showSnackBar(const SnackBar(
+                            content: Text("Tagged user removed")));
+                      });
+                    },
+                  )
                 : null,
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(mainUserId: widget.mainUserId, userId: widget.task.tagged.elementAt(i).getId)))
           ),
         ),
       );
-      if (i + 1 != widget.task.tagged.length) {
-        children.add(const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Divider(
-            color: Colors.black54,
-          ),
-        ));
-      }
     }
     children.add(const SizedBox(
-      height: 70,
+      height: 75,
     ));
     children.add(ListTile(
       tileColor: Colors.green[800],
@@ -111,86 +101,83 @@ class _TaskPageState extends State<TaskPage> {
         scaffoldMessenger.hideCurrentSnackBar();
         mainUser.getFriends.isEmpty
             ? scaffoldMessenger.showSnackBar(const SnackBar(
-            content: Text("You haven't add any friends, request them.")))
+                content: Text("You haven't add any friends, request them.")))
             : showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20))),
-            builder: (context) {
-              return StatefulBuilder(builder: (context, setState) {
-                return SingleChildScrollView(
-                  child: SizedBox(
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.5,
-                    child: Column(
-                      children: [
-                        IconButton(
-                            onPressed: () => Navigator.pop(context),
-                            icon: Transform.rotate(
-                                angle: -0.5 * pi,
-                                child: const Icon(
-                                  Icons.arrow_back_ios_new,
-                                  size: 25,
-                                ))
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: mainUser.getFriends.length,
-                            itemBuilder: (context, index) {
-                              User friend =
-                              mainUser.getFriends.elementAt(index);
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: ListTile(
-                                  leading: const CircleAvatar(
-                                    radius: 25,
-                                    backgroundImage:
-                                    AssetImage("assets/avatar.png"),
-                                  ),
-                                  title: Text(
-                                    friend.firstname,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  trailing: IconButton(
-                                    icon: Icon(
-                                      Icons.add_circle,
-                                      color: widget.task.tagged
-                                          .contains(friend)
-                                          ? Colors.green
-                                          : null,
-                                      size: 35,
+                isScrollControlled: true,
+                context: context,
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
+                builder: (context) {
+                  return StatefulBuilder(builder: (context, setState) {
+                    return SingleChildScrollView(
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        child: Column(
+                          children: [
+                            IconButton(
+                                onPressed: () => Navigator.pop(context),
+                                icon: Transform.rotate(
+                                    angle: -0.5 * pi,
+                                    child: const Icon(
+                                      Icons.arrow_back_ios_new,
+                                      size: 25,
+                                    ))),
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: mainUser.getFriends.length,
+                                itemBuilder: (context, index) {
+                                  User friend =
+                                      mainUser.getFriends.elementAt(index);
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: ListTile(
+                                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(mainUserId: widget.mainUserId, userId: friend.getId,))),
+                                      leading: const CircleAvatar(
+                                        radius: 25,
+                                        backgroundImage:
+                                            AssetImage("assets/avatar.png"),
+                                      ),
+                                      title: Text(
+                                        friend.firstname,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      trailing: IconButton(
+                                        icon: Icon(
+                                          Icons.add_circle,
+                                          color: widget.task.tagged
+                                                  .contains(friend)
+                                              ? Colors.green
+                                              : null,
+                                          size: 35,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            tagFunc(friend);
+                                          });
+                                        },
+                                      ),
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        tagFunc(friend);
-                                      });
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                                  );
+                                },
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: FloatingActionButton(
+                                    child: Icon(Icons.person_add),
+                                    onPressed: () {}),
+                              ),
+                            ),
+                          ],
                         ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: FloatingActionButton(
-                                child: Icon(Icons.person_add),
-                                onPressed: () {}),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              });
-            });
+                      ),
+                    );
+                  });
+                });
       },
     ));
     children.add(const SizedBox(
@@ -236,16 +223,14 @@ class _TaskPageState extends State<TaskPage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            TaskListPage(
-                                                taskList: widget.taskList,
-                                                mainUserId: widget
-                                                    .mainUserId)));
+                                        builder: (context) => TaskListPage(
+                                            taskList: widget.taskList,
+                                            mainUserId: widget.mainUserId)));
 
                                 scaffoldMessenger.hideCurrentSnackBar();
                                 scaffoldMessenger.showSnackBar(SnackBar(
                                   content:
-                                  const Text("Task deleted successfully"),
+                                      const Text("Task deleted successfully"),
                                   action: SnackBarAction(
                                     label: 'Ok',
                                     onPressed: () =>
@@ -309,10 +294,9 @@ class _TaskPageState extends State<TaskPage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        TaskListPage(
-                            mainUserId: widget.mainUserId,
-                            taskList: widget.taskList)));
+                    builder: (context) => TaskListPage(
+                        mainUserId: widget.mainUserId,
+                        taskList: widget.taskList)));
           },
         ),
       ),
@@ -326,6 +310,7 @@ class _TaskPageState extends State<TaskPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: ListTile(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(mainUserId: widget.mainUserId, userId: widget.task.ownerId))),
                       leading: const CircleAvatar(
                         backgroundImage: const AssetImage("assets/avatar.png"),
                         radius: 30,
@@ -339,7 +324,7 @@ class _TaskPageState extends State<TaskPage> {
                             ),
                             TextSpan(
                                 text:
-                                Users.users[widget.task.ownerId]!.firstname,
+                                    Users.users[widget.task.ownerId]!.firstname,
                                 style: const TextStyle(color: Colors.black))
                           ]),
                         ),
@@ -352,34 +337,35 @@ class _TaskPageState extends State<TaskPage> {
                   //     borderRadius: BorderRadius.circular(50)),
                   child: ListTile(
                     tileColor:
-                    widget.task.done ? Colors.green[800] : Colors.indigo,
+                        widget.task.done ? Colors.green[800] : Colors.indigo,
                     title: Center(
                         child: Padding(
-                          padding: EdgeInsets.all(widget.task.done ? 29 : 15),
-                          child: (widget.task.done
-                              ? const Text(
-                            "Done",
-                            style: const TextStyle(
-                                fontSize: 25, color: Colors.white),
-                          )
-                              : RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(children: [
-                              const TextSpan(
-                                  text: "Not done yet :(\n\n",
-                                  style: const TextStyle(
-                                      fontSize: 20, color: Colors.white)),
-                              TextSpan(
-                                  text: timeLeft(widget.task.deadline),
-                                  style: const TextStyle(
-                                      fontSize: 15, color: Colors.white))
-                            ]),
-                          )),
-                        )),
+                      padding: EdgeInsets.all(widget.task.done ? 29 : 15),
+                      child: (widget.task.done
+                          ? const Text(
+                              "Done",
+                              style: const TextStyle(
+                                  fontSize: 25, color: Colors.white),
+                            )
+                          : RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(children: [
+                                const TextSpan(
+                                    text: "Not done yet :(\n\n",
+                                    style: const TextStyle(
+                                        fontSize: 20, color: Colors.white)),
+                                TextSpan(
+                                    text: timeLeft(widget.task.deadline),
+                                    style: const TextStyle(
+                                        fontSize: 15, color: Colors.white))
+                              ]),
+                            )),
+                    )),
                     onTap: () {
                       scaffoldMessenger.removeCurrentSnackBar();
                       setState(() {
                         widget.task.done = !widget.task.done;
+                        Users.users[widget.mainUserId]!.taskPoint += 1;
                       });
                       scaffoldMessenger.showSnackBar(SnackBar(
                         content: Text("Task set as " +
@@ -539,20 +525,20 @@ class _TaskPageState extends State<TaskPage> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  TaskPage(
-                      task: task,
-                      mainUserId: widget.mainUserId,
-                      taskList: widget.taskList)));
+              builder: (context) => TaskPage(
+                  task: task,
+                  mainUserId: widget.mainUserId,
+                  taskList: widget.taskList)));
     });
   }
 
-  Future<void> textEditorBottomPopup({required TextEditingController controller,
-    required int minLines,
-    required int maxLines,
-    required height,
-    required String type,
-    required String hint}) {
+  Future<void> textEditorBottomPopup(
+      {required TextEditingController controller,
+      required int minLines,
+      required int maxLines,
+      required height,
+      required String type,
+      required String hint}) {
     return showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -564,10 +550,7 @@ class _TaskPageState extends State<TaskPage> {
           return StatefulBuilder(builder: (context, setState) {
             return Padding(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery
-                      .of(context)
-                      .viewInsets
-                      .bottom),
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
               child: Container(
                 height: height,
                 child: Padding(

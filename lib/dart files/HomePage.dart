@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 title: const Text("Edit profile"),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
-                                onTap: () {},
+                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(mainUserId: widget.mainUserId, userId: widget.mainUserId))),
                               ),
                               ListTile(
                                 leading: const Icon(

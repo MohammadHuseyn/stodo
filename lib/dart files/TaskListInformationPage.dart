@@ -1,6 +1,7 @@
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stodo/dart%20files/Profile.dart';
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
 import '../classes/Users.dart';
@@ -40,6 +41,7 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
         Padding(
           padding: const EdgeInsets.only(top: 10),
           child: ListTile(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(mainUserId: widget.mainUserId, userId: widget.taskList.users.elementAt(i).getId))),
             leading: CircleAvatar(
               radius: 25,
               backgroundImage: AssetImage("assets/avatar.png"),
@@ -139,6 +141,7 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                               return Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: ListTile(
+                                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(mainUserId: widget.mainUserId, userId: user.getId))),
                                   leading: const CircleAvatar(
                                     radius: 25,
                                     backgroundImage:
@@ -286,6 +289,7 @@ class _TaskListInformationPageState extends State<TaskListInformationPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: ListTile(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(mainUserId: widget.mainUserId, userId: widget.taskList.creatorId))),
                       leading: CircleAvatar(
                         backgroundImage: AssetImage("assets/avatar.png"),
                         radius: 30,

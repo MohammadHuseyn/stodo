@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:stodo/classes/Users.dart';
 import 'package:stodo/dart%20files/TaskListInformationPage.dart';
 import 'package:timeago_flutter/timeago_flutter.dart';
 import '../classes/Task.dart';
@@ -183,6 +184,7 @@ class _TaskListPageState extends State<TaskListPage> {
                               onPressed: () {
                                 setState(() {
                                   task.done = !task.done;
+                                  Users.users[widget.mainUserId]!.taskPoint += 1;
                                 });
                               },
                             ),
