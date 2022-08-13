@@ -470,6 +470,17 @@ class _TaskPageState extends State<TaskPage> {
                           ),
                         ),
                       ),
+                      ListTile(
+                        leading: Text("ID"),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            widget.taskList.getId,
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                        onTap: (){},
+                      ),
                     ],
                   ),
                 ),

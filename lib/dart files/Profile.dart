@@ -189,6 +189,17 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                       ),
+                      ListTile(
+                        leading: Text("ID"),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            user.getId,
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                        onTap: (){},
+                      ),
                     ],
                   ),
                 ),
