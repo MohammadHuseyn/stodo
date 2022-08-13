@@ -5,7 +5,7 @@ import 'Users.dart';
 
 class Task {
   final String _id =
-      DateTime.now().millisecond.toString() + Random().nextInt(1000).toString();
+      DateTime.now().millisecond.toString() + Random().nextInt(1000000).toString();
 
   bool done = false;
   bool stared = false;

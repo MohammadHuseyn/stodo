@@ -5,7 +5,7 @@ import 'package:stodo/classes/Users.dart';
 
 class User {
   final String _id =
-      DateTime.now().millisecond.toString() + Random().nextInt(1000).toString();
+      DateTime.now().millisecond.toString() + Random().nextInt(1000000).toString();
 
   final DateTime dateJoined = DateTime.now();
   List<User> _friends = [];

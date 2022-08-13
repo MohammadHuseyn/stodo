@@ -6,7 +6,7 @@ import 'Task.dart';
 
 class TaskList {
   final String _id =
-      DateTime.now().millisecond.toString() + Random().nextInt(1000).toString();
+      DateTime.now().millisecond.toString() + Random().nextInt(1000000).toString();
 
   List<Task> tasks = [];
   List<User> users = [];
@@ -18,7 +18,6 @@ class TaskList {
   late String name;
   late String description;
   late String creatorId;
-
   String get getId => _id;
 
   List<User> get getJoinRequests => _joinRequests;
