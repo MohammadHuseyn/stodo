@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:math' show Random;
 
 import 'package:stodo/classes/TaskList.dart';
@@ -10,6 +9,7 @@ class User {
 
   final DateTime dateJoined = DateTime.now();
   List<User> _friends = [];
+  List<User> friendRequest = [];
   List<TaskList> taskLists = [];
   String firstname;
   String lastname;

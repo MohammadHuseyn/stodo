@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:stodo/dart%20files/Friends.dart';
 import 'package:stodo/dart%20files/Profile.dart';
+import 'package:stodo/dart%20files/Stared.dart';
 import 'package:stodo/dart%20files/TaskListPage.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../classes/TaskList.dart';
 import '../classes/User.dart';
 import '../classes/Users.dart';
 import 'AddTaskList.dart';
+import 'Setting.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
@@ -58,30 +61,32 @@ class _MyHomePageState extends State<MyHomePage> {
                         SizedBox(
                           height: 30,
                         ),
-                        Card(
-                          margin: const EdgeInsets.all(25),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50)),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: ListTile(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Profile(
-                                          mainUserId: widget.mainUserId,
-                                          userId: widget.mainUserId))),
-                              minLeadingWidth: 90,
-                              leading: CircleAvatar(
-                                  radius: 30,
-                                  backgroundImage:
-                                      AssetImage("assets/avatar.png")),
-                              title: Text(
-                                "Name",
-                                style: TextStyle(fontSize: 20),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Profile(
+                                      mainUserId: widget.mainUserId,
+                                      userId: widget.mainUserId))),
+                          child: Card(
+                            margin: const EdgeInsets.all(25),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: ListTile(
+                                minLeadingWidth: 90,
+                                leading: CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage:
+                                        AssetImage("assets/avatar.png")),
+                                title: Text(
+                                  mainUser.firstname,
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                subtitle: Text(mainUser.username,
+                                    style: TextStyle(fontSize: 12)),
                               ),
-                              subtitle: Text("username",
-                                  style: TextStyle(fontSize: 14)),
                             ),
                           ),
                         ),
@@ -99,7 +104,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                 title: const Text("Edit profile"),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
-                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(mainUserId: widget.mainUserId, userId: widget.mainUserId))),
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Profile(
+                                            mainUserId: widget.mainUserId,
+                                            userId: widget.mainUserId))),
                               ),
                               ListTile(
                                 leading: const Icon(
@@ -133,17 +143,26 @@ class _MyHomePageState extends State<MyHomePage> {
                                 title: const Text("Friends"),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
-                                onTap: () {},
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Friends(
+                                            mainUserId: widget.mainUserId))),
                               ),
                               ListTile(
                                 leading: const Icon(
-                                  Icons.bookmark,
+                                  Icons.star,
                                   color: Colors.black,
                                 ),
-                                title: const Text("Highlighted"),
+                                title: const Text("Stared"),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
-                                onTap: () {},
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Stared(
+                                              mainUserId: widget.mainUserId,
+                                            ))),
                               ),
                               ListTile(
                                 leading: const Icon(
@@ -153,7 +172,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                 title: const Text("Setting"),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
-                                onTap: () {},
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Setting(
+                                            mainUserId: widget.mainUserId))),
                               ),
                             ],
                           ),
@@ -183,16 +206,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                 },
                               ),
                               ListTile(
-                                leading: const Icon(
-                                  Icons.phone,
-                                  color: Colors.black,
-                                ),
-                                hoverColor: Colors.green,
-                                title: const Text("Contact us"),
-                                trailing:
-                                    const Icon(Icons.keyboard_arrow_right),
-                                onTap: () {},
-                              ),
+                                  leading: const Icon(
+                                    Icons.phone,
+                                    color: Colors.black,
+                                  ),
+                                  hoverColor: Colors.green,
+                                  title: const Text("Contact us"),
+                                  trailing:
+                                      const Icon(Icons.keyboard_arrow_right),
+                                  onTap: () => launchUrl(Uri.parse(
+                                      "mailto:amini4job@gmail.com?subject=Stodo contact us email"))),
                               ListTile(
                                 hoverColor: Colors.red,
                                 leading: const Icon(

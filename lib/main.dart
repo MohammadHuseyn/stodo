@@ -33,11 +33,10 @@ class MyApp extends StatelessWidget {
 
     mainUser.addFriend(mostafa);
     mainUser.addFriend(morteza);
-    mainUser.addFriend(ali);
     mostafa.addFriend(mainUser);
     morteza.addFriend(mainUser);
-    ali.addFriend(mainUser);
 
+    mainUser.friendRequest.add(ali);
     Task task1 = Task(
         title: "Task1",
         description: "desc1\nthis is a new task for \nnothing. its just a task",
