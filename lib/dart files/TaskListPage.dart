@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:stodo/classes/Users.dart';
@@ -12,7 +13,7 @@ import 'dart:math';
 import 'TaskPage.dart';
 
 class TaskListPage extends StatefulWidget {
-  TaskListPage({required this.taskList, required this.mainUserId,});
+  TaskListPage({Key? key, required this.taskList, required this.mainUserId,}) : super(key: key);
 
   TaskList taskList;
   String mainUserId;
@@ -38,13 +39,13 @@ class _TaskListPageState extends State<TaskListPage> {
             title: Center(
                 child: Text(
               widget.taskList.name,
-              style: TextStyle(color: Colors.white, fontSize: 20),
+              style: const TextStyle(color: Colors.white, fontSize: 20),
             )),
             subtitle: Center(
                 child: Text(
               widget.taskList.users.length.toString() +
                   (widget.taskList.users.length <= 1 ? " user" : " users"),
-              style: TextStyle(color: Colors.white70, fontSize: 15),
+              style: const TextStyle(color: Colors.white70, fontSize: 15),
             )),
             onTap: () => Navigator.push(
               context,
@@ -55,38 +56,42 @@ class _TaskListPageState extends State<TaskListPage> {
           ),
         ),
         actions: [
-          PopupMenuButton<String>(
-            onSelected: handleClick,
-            itemBuilder: (BuildContext context) {
-              return {'Logout', 'Settings'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          ),
+          IconButton(
+            icon: const Icon(Icons.copy),
+            onPressed: () => Clipboard.setData(
+                ClipboardData(text: widget.taskList.getId))
+                .then((value) => ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(
+              content: const Text("ID copeied to clipboard"),
+              action: SnackBarAction(
+                label: "Ok",
+                onPressed: () =>
+                    ScaffoldMessenger.of(context)
+                        .hideCurrentSnackBar(),
+              ),
+            ))),
+          )
         ],
       ),
       body: Column(
         children: [
           Expanded(
             child: Container(
-              margin: EdgeInsets.only(top: 10),
+              margin: const EdgeInsets.only(top: 10),
               height: MediaQuery.of(context).size.height,
               child: ListView.builder(
                 itemCount: widget.taskList.tasks.length,
                 itemBuilder: (context, index) {
                   Task task = widget.taskList.tasks.elementAt(index);
                   return Card(
-                      margin: EdgeInsets.only(left: 15, right: 15, top: 10),
+                      margin: const EdgeInsets.only(left: 15, right: 15, top: 10),
                       child: Slidable(
                         closeOnScroll: true,
                         key: UniqueKey(),
                         startActionPane: ActionPane(
-                          motion: DrawerMotion(),
+                          motion: const DrawerMotion(),
                           dismissible: DismissiblePane(
-                              motion: DrawerMotion(),
+                              motion: const DrawerMotion(),
                               onDismissed: () {
                                 Task undo = task;
                                 deleteSlideAction(undo);
@@ -98,7 +103,7 @@ class _TaskListPageState extends State<TaskListPage> {
                                 deleteSlideAction(undo);
                               },
                               autoClose: true,
-                              backgroundColor: Color(0xFFFE4A49),
+                              backgroundColor: const Color(0xFFFE4A49),
                               foregroundColor: Colors.white,
                               icon: Icons.delete,
                               label: 'Delete',
@@ -106,12 +111,15 @@ class _TaskListPageState extends State<TaskListPage> {
                           ],
                         ),
                         endActionPane: ActionPane(
-                          motion: DrawerMotion(),
+                          motion: const DrawerMotion(),
                           children: [
                             SlidableAction(
                               // An action can be bigger than the others.
                               onPressed: (context) {
-                                setState(() => task.stared = !task.stared);
+                                setState(() {
+                                  task.stared = !task.stared;
+                                  Users.users[widget.mainUserId]!.stared.add(task);
+                                });
                                 ScaffoldMessenger.of(context)
                                     .hideCurrentSnackBar();
                                 ScaffoldMessenger.of(context)
@@ -160,11 +168,10 @@ class _TaskListPageState extends State<TaskListPage> {
                                   builder: (context) => TaskPage(
                                         task: task,
                                         mainUserId: widget.mainUserId,
-                                        taskList: widget.taskList,
                                       ))),
                           subtitle: Wrap(spacing: 5, children: [
                             Timeago(
-                                builder: (context, value) => Text(value + ', '),
+                                builder: (context, value) => Text('$value, '),
                                 date: task.dateCreated),
                             Text(task.description.split('\n').elementAt(0) +
                                 (task.description.split('\n').length > 1
@@ -172,8 +179,8 @@ class _TaskListPageState extends State<TaskListPage> {
                                     : "")),
                           ]),
                           leading: Ink(
-                            decoration: ShapeDecoration(
-                                shape: CircleBorder(), color: Colors.white),
+                            decoration: const ShapeDecoration(
+                                shape: const CircleBorder(), color: Colors.white),
                             child: IconButton(
                               icon: Icon(
                                 task.done
@@ -205,13 +212,13 @@ class _TaskListPageState extends State<TaskListPage> {
                               task.stared
                                   ? Transform.rotate(
                                       angle: pi - 50,
-                                      child: Icon(
+                                      child: const Icon(
                                         Icons.star,
                                         color: Colors.orange,
                                         size: 20,
                                       ),
                                     )
-                                  : Text("")
+                                  : const Text("")
                             ]),
                           ),
                           tileColor: task.done ? Colors.black12 : null,
@@ -226,22 +233,22 @@ class _TaskListPageState extends State<TaskListPage> {
             child: Padding(
               padding: const EdgeInsets.all(15),
               child: ElevatedButton(
-                child: Text(
+                child: const Text(
                   "add a new task",
                   style: TextStyle(fontSize: 20),
                 ),
                 style: ElevatedButton.styleFrom(
                     primary: Colors.green,
                     padding:
-                        EdgeInsets.symmetric(horizontal: 60, vertical: 25)),
+                        const EdgeInsets.symmetric(horizontal: 60, vertical: 25)),
                 onPressed: () {
                   showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: const BorderRadius.only(
+                            topLeft: const Radius.circular(20),
+                            topRight: const Radius.circular(20)),
                       ),
                       builder: (context) {
                         return StatefulBuilder(builder: (context, setState) {
@@ -249,7 +256,7 @@ class _TaskListPageState extends State<TaskListPage> {
                               hint: "Select a title for you task and type it",
                               subject: " Title ",
                               iconButtonAfter: IconButton(
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.arrow_forward,
                                   size: 25,
                                   color: Colors.teal,
@@ -261,17 +268,18 @@ class _TaskListPageState extends State<TaskListPage> {
                                       newTask = new Task(
                                           title: titleC.text,
                                           description: '',
-                                          ownerId: widget.mainUserId);
+                                          ownerId: widget.mainUserId,
+                                      );
                                     });
                                     Navigator.pop(context);
 
                                     showModalBottomSheet(
                                         context: context,
                                         isScrollControlled: true,
-                                        shape: RoundedRectangleBorder(
+                                        shape: const RoundedRectangleBorder(
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(20),
-                                              topRight: Radius.circular(20)),
+                                              topRight: const Radius.circular(20)),
                                         ),
                                         builder: (context) {
                                           return StatefulBuilder(
@@ -281,7 +289,7 @@ class _TaskListPageState extends State<TaskListPage> {
                                                     "Make a description for you task",
                                                 subject: " Description ",
                                                 iconButtonAfter: IconButton(
-                                                  icon: Icon(
+                                                  icon: const Icon(
                                                     Icons.add,
                                                     size: 25,
                                                     color: Colors.teal,
@@ -299,7 +307,7 @@ class _TaskListPageState extends State<TaskListPage> {
                                                     onPressed: () {
                                                       Navigator.pop(context);
                                                     },
-                                                    icon: Icon(
+                                                    icon: const Icon(
                                                       Icons.delete,
                                                       size: 25,
                                                       color: Colors.red,
@@ -315,7 +323,7 @@ class _TaskListPageState extends State<TaskListPage> {
                                   },
                                   icon: Transform.rotate(
                                       angle: -0.5 * pi,
-                                      child: Icon(
+                                      child: const Icon(
                                         Icons.arrow_back_ios_new,
                                         size: 25,
                                         color: Colors.red,
@@ -331,19 +339,11 @@ class _TaskListPageState extends State<TaskListPage> {
     );
   }
 
-  void handleClick(String value) {
-    switch (value) {
-      case 'Logout':
-        break;
-      case 'Settings':
-        break;
-    }
-  }
-
   void addTask(Task task) {
     setState(() {
       widget.taskList.tasks.add(task);
       // widget.taskList.sortTasksInDate();
+      task.taskList = widget.taskList;
     });
   }
 
@@ -388,15 +388,15 @@ class _TaskListPageState extends State<TaskListPage> {
                       textAlign: TextAlign.center,
                       decoration: new InputDecoration.collapsed(
                           hintText: subject,
-                          hintStyle: TextStyle(
+                          hintStyle: const TextStyle(
                             fontSize: 22,
                           )),
-                      style: TextStyle(fontSize: 25),
+                      style: const TextStyle(fontSize: 25),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Text(
                       hint,
-                      style: TextStyle(fontSize: 13, color: Colors.black87),
+                      style: const TextStyle(fontSize: 13, color: Colors.black87),
                     ),
                   ],
                 ),

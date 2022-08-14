@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:stodo/classes/Task.dart';
 import 'package:stodo/classes/TaskList.dart';
 import 'classes/User.dart';
-import 'classes/Users.dart';
 import 'dart files/HomePage.dart';
 
 void main() {
@@ -51,10 +50,12 @@ class MyApp extends StatelessWidget {
         educationCenter: "Shahid Beheshti University",
         description: "description of taskList",
         creatorId: mainUser.getId);
-    taskList1.addJoinRequest(ali);
     taskList1.tasks.add(task1);
+    task1.taskList = taskList1;
     taskList1.tasks.add(task2);
+    task2.taskList = taskList1;
     taskList1.tasks.add(task3);
+    task3.taskList = taskList1;
     Task task4 =
         Task(title: "Task4", description: "desc4", ownerId: mainUser.getId);
     Task task5 =
@@ -68,8 +69,11 @@ class MyApp extends StatelessWidget {
         description: "description of taskList",
         creatorId: mainUser.getId);
     taskList2.tasks.add(task4);
+    task4.taskList = taskList2;
     taskList2.tasks.add(task5);
+    task5.taskList = taskList2;
     taskList2.tasks.add(task6);
+    task6.taskList = taskList2;
 
     mainUser.taskLists.add(taskList1);
     mainUser.taskLists.add(taskList2);

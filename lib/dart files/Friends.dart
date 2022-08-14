@@ -1,15 +1,11 @@
 import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stodo/classes/Users.dart';
-import 'package:stodo/main.dart';
-
 import '../classes/User.dart';
 import 'Profile.dart';
 
 class Friends extends StatefulWidget {
-  Friends({required this.mainUserId});
+  Friends({Key? key, required this.mainUserId}) : super(key: key);
 
   String mainUserId;
   String subText = "Enter username";
@@ -38,13 +34,13 @@ class _FriendsState extends State<Friends> {
                             context: context,
                             isScrollControlled: true,
                             shape: const RoundedRectangleBorder(
-                              borderRadius: const BorderRadius.only(
+                              borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(20),
                                   topRight: Radius.circular(20)),
                             ),
                             builder: (context) =>
                                 StatefulBuilder(builder: (context, setState) {
-                                  return Container(
+                                  return SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.5,
                                     child: Column(
@@ -59,13 +55,13 @@ class _FriendsState extends State<Friends> {
                                                   color: Colors.black54,
                                                   size: 20,
                                                 ))),
-                                        Text("Friend requests"),
-                                        mainUser.friendRequest.length == 0
+                                        const Text("Friend requests"),
+                                        mainUser.friendRequest.isEmpty
                                             ? Padding(
                                           padding: const EdgeInsets.only(top: 40),
                                           child: RichText(
                                             textAlign: TextAlign.center,
-                                            text: TextSpan(children: [
+                                            text: const TextSpan(children: [
                                               TextSpan(text: "There is no request\n\n\n",
                                                   style: TextStyle(fontSize: 30,color: Colors.black54)),
                                               TextSpan(text: "💌",style: TextStyle(fontSize: 100))
@@ -111,14 +107,14 @@ class _FriendsState extends State<Friends> {
                                                     spacing: 5,
                                                     children: [
                                                       IconButton(
-                                                        icon: Icon(
+                                                        icon: const Icon(
                                                           Icons.clear,
                                                           color:
                                                           Colors.red,
                                                         ),
                                                         onPressed: () {
                                                           setState(() =>
-                                                              IgnoreRequest(
+                                                              ignoreRequest(
                                                                   user));
                                                         },
                                                       ),
@@ -241,7 +237,7 @@ class _FriendsState extends State<Friends> {
                   return Padding(
                     padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).viewInsets.bottom),
-                    child: Container(
+                    child: SizedBox(
                       height: 120,
                       child: Padding(
                         padding: const EdgeInsets.all(30),
@@ -303,7 +299,7 @@ class _FriendsState extends State<Friends> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                           content:
-                                              const Text("user not found")));
+                                              Text("user not found")));
                                 } else if (mainUser.getFriends.contains(user)) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -313,7 +309,7 @@ class _FriendsState extends State<Friends> {
                                   user.friendRequest.add(user);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                          content: const Text(
+                                          content: Text(
                                               "friend request send")));
                                 }
                               },
@@ -344,7 +340,7 @@ class _FriendsState extends State<Friends> {
         widget.nullBool = true;
       } else {
         widget.subText =
-            "user \"" + user.firstname + " " + user.lastname + "\" found";
+            "user \"${user.firstname} ${user.lastname}\" found";
         widget.nullBool = false;
       }
     });
@@ -357,14 +353,14 @@ class _FriendsState extends State<Friends> {
       mainUser.addFriend(friend);
       friend.addFriend(mainUser);
     });
-    if (mainUser.friendRequest.length == 0) Navigator.pop(context);
+    if (mainUser.friendRequest.isEmpty) Navigator.pop(context);
   }
 
-  IgnoreRequest(User user) {
+  ignoreRequest(User user) {
     User mainUser = Users.users[widget.mainUserId]!;
     setState(() {
       mainUser.friendRequest.remove(user);
     });
-    if (mainUser.friendRequest.length == 0) Navigator.pop(context);
+    if (mainUser.friendRequest.isEmpty) Navigator.pop(context);
   }
 }

@@ -1,14 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stodo/classes/TaskList.dart';
 import 'package:stodo/dart%20files/HomePage.dart';
-import 'package:stodo/main.dart';
-
-import '../classes/User.dart';
 import '../classes/Users.dart';
-
 class AddTaskList extends StatefulWidget {
-  AddTaskList({required this.mainUserId});
+  AddTaskList({Key? key, required this.mainUserId}) : super(key: key);
 
   String mainUserId;
 

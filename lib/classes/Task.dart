@@ -1,5 +1,7 @@
 import 'dart:math' show Random;
 
+import 'package:stodo/classes/TaskList.dart';
+
 import 'User.dart';
 import 'Users.dart';
 
@@ -16,7 +18,7 @@ class Task {
   late String title;
   late String description;
   late String ownerId;
-
+  late TaskList taskList;
   String get getId => _id;
 
   Task({

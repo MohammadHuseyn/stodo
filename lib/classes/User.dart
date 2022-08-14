@@ -3,6 +3,8 @@ import 'dart:math' show Random;
 import 'package:stodo/classes/TaskList.dart';
 import 'package:stodo/classes/Users.dart';
 
+import 'Task.dart';
+
 class User {
   final String _id =
       DateTime.now().millisecond.toString() + Random().nextInt(100000).toString();
@@ -11,6 +13,7 @@ class User {
   List<User> _friends = [];
   List<User> friendRequest = [];
   List<TaskList> taskLists = [];
+  List<Task> stared = [];
   String firstname;
   String lastname;
   late String username;
@@ -38,10 +41,11 @@ class User {
   }
 
   void removeFriend({User? friend, int? index}) {
-    if (friend == null)
+    if (friend == null) {
       _friends.removeAt(index!);
-    else
+    } else {
       _friends.remove(friend);
+    }
   }
 
   void setBio(String bio) {
