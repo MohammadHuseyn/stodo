@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
         educationCenter: "Shahid Beheshti University",
         description: "description of taskList",
         creatorId: mainUser.getId);
+    taskList1.addJoinRequest(ali);
     taskList1.tasks.add(task1);
     taskList1.tasks.add(task2);
     taskList1.tasks.add(task3);

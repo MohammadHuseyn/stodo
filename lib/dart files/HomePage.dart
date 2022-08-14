@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:stodo/dart%20files/Friends.dart';
@@ -12,7 +14,7 @@ import 'AddTaskList.dart';
 import 'Setting.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({
+  MyHomePage({
     Key? key,
     required this.title,
     required this.mainUserId,
@@ -20,7 +22,9 @@ class MyHomePage extends StatefulWidget {
 
   final String title;
   final String mainUserId;
-
+  String subText = "";
+  bool nullBool = false;
+  String searchedTaskListOwnerId = "";
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -127,13 +131,132 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               ListTile(
                                 leading: const Icon(
-                                  Icons.list,
+                                  Icons.search,
                                   color: Colors.black,
                                 ),
-                                title: const Text("All lists"),
+                                title: const Text("Search in TaskLists"),
                                 trailing:
                                     const Icon(Icons.keyboard_arrow_right),
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  var controller = TextEditingController();
+                                  showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      context: context,
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(20),
+                                              topRight: Radius.circular(20))),
+                                      builder: (context) {
+                                        return StatefulBuilder(builder: (context, setState) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                bottom: MediaQuery.of(context).viewInsets.bottom),
+                                            child: Container(
+                                              height: 150,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(30),
+                                                child: Row(
+                                                  children: [
+                                                    IconButton(
+                                                      icon: Transform.rotate(
+                                                          angle: -0.5 * pi,
+                                                          child: const Icon(
+                                                            Icons.arrow_back_ios_new,
+                                                            color: Colors.black54,
+                                                            size: 25,
+                                                          )),
+                                                      onPressed: () => Navigator.pop(context),
+                                                    ),
+                                                    Expanded(
+                                                      child: Column(
+                                                        children: [
+                                                          Expanded(
+                                                            child: TextField(
+                                                              scrollController: ScrollController(),
+                                                              autofocus: true,
+                                                              controller: controller,
+                                                              textAlign: TextAlign.center,
+                                                              decoration:
+                                                              const InputDecoration.collapsed(
+                                                                  hintText: "Enter TaskList ID",
+                                                                  hintStyle: TextStyle(
+                                                                    fontSize: 18,
+                                                                  )),
+                                                              style: const TextStyle(fontSize: 25),
+                                                              onChanged: (String txt) {
+                                                                setState(() => checkTaskList(txt));
+                                                              },
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 15,
+                                                          ),
+                                                          Text(
+                                                            widget.subText,
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                                color: widget.nullBool
+                                                                    ? Colors.red
+                                                                    : null),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                        Icons.search,
+                                                        color: Colors.green,
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                        User? user = Users.users[widget.searchedTaskListOwnerId]!;
+
+                                                        if (user == null) {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                              SnackBar(
+                                                                  content:
+                                                                   Text("There is no tasklist"),
+                                                              action: SnackBarAction(
+                                                                  label: "Ok",
+                                                                  onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar())));
+                                                        } else {
+                                                          late TaskList taskList;
+                                                          user.taskLists.forEach((element) {
+                                                            if (element.getId == controller.text) {
+                                                              taskList = element;
+                                                              return;
+                                                            }
+                                                          });
+                                                          if (mainUser.taskLists.contains(taskList)) {
+                                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                              content: Text("you already joined this taskList"),
+                                                              action: SnackBarAction(
+                                                                label: "Ok",
+                                                                onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                                                              ),
+                                                            ));
+                                                          } else {
+                                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                              content: Text("join request sent"),
+                                                              action: SnackBarAction(
+                                                                label: "Ok",
+                                                                onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                                                              ),
+                                                            ));
+                                                            taskList.addJoinRequest(user);
+                                                          }
+                                                        }
+                                                      },
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        });
+                                      });
+                                },
                               ),
                               ListTile(
                                 leading: const Icon(
@@ -306,6 +429,27 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
         ));
+  }
+
+  void checkTaskList(String txt) {
+    setState((){
+      for(int i = 0; i < Users.users.length; i++){
+        User user = Users.users.values.elementAt(i);
+        for(int j = 0; j < user.taskLists.length; j++){
+          TaskList taskList = user.taskLists.elementAt(j);
+          if (taskList.getId == txt){
+            widget.subText = "TaskList \"" + taskList.name + "\" which belongs to \"" + user.username + "\" found" ;
+            widget.nullBool = false;
+            widget.searchedTaskListOwnerId = user.getId;
+            return;
+          }
+        }
+      }
+      widget.subText = "Tasklist could not be found";
+      widget.nullBool = true;
+      widget.searchedTaskListOwnerId = "";
+    });
+
   }
 }
 

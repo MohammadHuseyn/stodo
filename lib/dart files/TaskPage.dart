@@ -43,41 +43,48 @@ class _TaskPageState extends State<TaskPage> {
         Padding(
           padding: const EdgeInsets.only(top: 10),
           child: ListTile(
-            leading: const CircleAvatar(
-              radius: 25,
-              backgroundImage: AssetImage("assets/avatar.png"),
-            ),
-            title: Text(
-              widget.task.tagged.elementAt(i).firstname,
-              textAlign: TextAlign.center,
-            ),
-            trailing: (widget.task.ownerId == widget.mainUserId ||
-                    widget.task.tagged.elementAt(i).getId == widget.mainUserId)
-                ? IconButton(
-                    icon: const Icon(
-                      Icons.remove_circle_outline,
-                      color: Colors.red,
-                    ),
-                    onPressed: () {
-                      // print(widget.mainUserId + " ::: " + widget.task.ownerId);
-                      setState(() {
-                        widget.task.tagged.removeAt(i);
-                        scaffoldMessenger.hideCurrentSnackBar();
-                        scaffoldMessenger.showSnackBar(const SnackBar(
-                            content: Text("Tagged user removed")));
-                      });
-                    },
-                  )
-                : null,
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(mainUserId: widget.mainUserId, userId: widget.task.tagged.elementAt(i).getId)))
-          ),
+              leading: const CircleAvatar(
+                radius: 25,
+                backgroundImage: AssetImage("assets/avatar.png"),
+              ),
+              title: Text(
+                widget.task.tagged.elementAt(i).firstname,
+                textAlign: TextAlign.center,
+              ),
+              trailing: (widget.task.ownerId == widget.mainUserId ||
+                      widget.task.tagged.elementAt(i).getId ==
+                          widget.mainUserId)
+                  ? IconButton(
+                      icon: const Icon(
+                        Icons.remove_circle_outline,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        if (widget.task.tagged.contains(mainUser)) {
+                          // print(widget.mainUserId + " ::: " + widget.task.ownerId);
+                          setState(() {
+                            widget.task.tagged.removeAt(i);
+                            scaffoldMessenger.hideCurrentSnackBar();
+                            scaffoldMessenger.showSnackBar(const SnackBar(
+                                content: Text("Tagged user removed")));
+                          });
+                        }
+                      },
+                    )
+                  : null,
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Profile(
+                          mainUserId: widget.mainUserId,
+                          userId: widget.task.tagged.elementAt(i).getId)))),
         ),
       );
     }
     children.add(const SizedBox(
       height: 75,
     ));
-    children.add(ListTile(
+    widget.task.tagged.contains(mainUser)?children.add(ListTile(
       tileColor: Colors.green[800],
       title: Center(
         child: Row(
@@ -133,7 +140,14 @@ class _TaskPageState extends State<TaskPage> {
                                   return Padding(
                                     padding: const EdgeInsets.only(top: 10),
                                     child: ListTile(
-                                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(mainUserId: widget.mainUserId, userId: friend.getId,))),
+                                      onTap: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Profile(
+                                                    mainUserId:
+                                                        widget.mainUserId,
+                                                    userId: friend.getId,
+                                                  ))),
                                       leading: const CircleAvatar(
                                         radius: 25,
                                         backgroundImage:
@@ -179,7 +193,7 @@ class _TaskPageState extends State<TaskPage> {
                   });
                 });
       },
-    ));
+    )) : Container();
     children.add(const SizedBox(
       height: 70,
     ));
@@ -310,7 +324,12 @@ class _TaskPageState extends State<TaskPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: ListTile(
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(mainUserId: widget.mainUserId, userId: widget.task.ownerId))),
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Profile(
+                                  mainUserId: widget.mainUserId,
+                                  userId: widget.task.ownerId))),
                       leading: const CircleAvatar(
                         backgroundImage: const AssetImage("assets/avatar.png"),
                         radius: 30,
@@ -362,20 +381,22 @@ class _TaskPageState extends State<TaskPage> {
                             )),
                     )),
                     onTap: () {
-                      scaffoldMessenger.removeCurrentSnackBar();
-                      setState(() {
-                        widget.task.done = !widget.task.done;
-                        Users.users[widget.mainUserId]!.taskPoint += 1;
-                      });
-                      scaffoldMessenger.showSnackBar(SnackBar(
-                        content: Text("Task set as " +
-                            (widget.task.done ? "Done" : "Undone")),
-                        action: SnackBarAction(
-                          label: 'Ok',
-                          onPressed: () =>
-                              scaffoldMessenger.hideCurrentSnackBar(),
-                        ),
-                      ));
+                      if (widget.task.tagged.contains(mainUser)) {
+                        scaffoldMessenger.removeCurrentSnackBar();
+                        setState(() {
+                          widget.task.done = !widget.task.done;
+                          Users.users[widget.mainUserId]!.taskPoint += 1;
+                        });
+                        scaffoldMessenger.showSnackBar(SnackBar(
+                          content: Text("Task set as " +
+                              (widget.task.done ? "Done" : "Undone")),
+                          action: SnackBarAction(
+                            label: 'Ok',
+                            onPressed: () =>
+                                scaffoldMessenger.hideCurrentSnackBar(),
+                          ),
+                        ));
+                      }
                     },
                   ),
                 ),
@@ -392,15 +413,17 @@ class _TaskPageState extends State<TaskPage> {
                           ),
                         ),
                         onTap: () {
-                          var controller = TextEditingController();
-                          controller.text = widget.task.title;
-                          textEditorBottomPopup(
-                              controller: controller,
-                              minLines: 1,
-                              maxLines: 1,
-                              height: 130.0,
-                              type: 'title',
-                              hint: "Title");
+                          if (widget.task.tagged.contains(mainUser)) {
+                            var controller = TextEditingController();
+                            controller.text = widget.task.title;
+                            textEditorBottomPopup(
+                                controller: controller,
+                                minLines: 1,
+                                maxLines: 1,
+                                height: 130.0,
+                                type: 'title',
+                                hint: "Title");
+                          }
                         },
                       ),
                       ListTile(
@@ -413,15 +436,17 @@ class _TaskPageState extends State<TaskPage> {
                           ),
                         ),
                         onTap: () {
-                          var controller = TextEditingController();
-                          controller.text = widget.task.description;
-                          textEditorBottomPopup(
-                              controller: controller,
-                              minLines: 3,
-                              maxLines: 5,
-                              height: 270.0,
-                              type: 'description',
-                              hint: "Description");
+                          if (widget.task.tagged.contains(mainUser)) {
+                            var controller = TextEditingController();
+                            controller.text = widget.task.description;
+                            textEditorBottomPopup(
+                                controller: controller,
+                                minLines: 3,
+                                maxLines: 5,
+                                height: 270.0,
+                                type: 'description',
+                                hint: "Description");
+                          }
                         },
                       ),
                       ListTile(
@@ -434,29 +459,31 @@ class _TaskPageState extends State<TaskPage> {
                             ),
                           ),
                           onTap: () async {
-                            DateTime deadline = widget.task.deadline;
-                            final DateTime? value = await showDatePicker(
-                                currentDate: widget.task.deadline,
-                                context: context,
-                                initialDate: deadline,
-                                firstDate: DateTime(2015),
-                                lastDate: DateTime(2040),
-                                confirmText: "Next");
-                            if (value != null) {
-                              final TimeOfDay? time = await showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay(
-                                    hour: deadline.hour,
-                                    minute: deadline.minute),
-                                initialEntryMode: TimePickerEntryMode.dial,
-                                confirmText: "Set",
-                              );
-                              if (time != null) {
-                                deadline = DateTime(value.year, value.month,
-                                    value.day, time.hour, time.minute);
-                                setState(() {
-                                  changeValues(type: "date", value: deadline);
-                                });
+                            if (widget.task.tagged.contains(mainUser)) {
+                              DateTime deadline = widget.task.deadline;
+                              final DateTime? value = await showDatePicker(
+                                  currentDate: widget.task.deadline,
+                                  context: context,
+                                  initialDate: deadline,
+                                  firstDate: DateTime(2015),
+                                  lastDate: DateTime(2040),
+                                  confirmText: "Next");
+                              if (value != null) {
+                                final TimeOfDay? time = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay(
+                                      hour: deadline.hour,
+                                      minute: deadline.minute),
+                                  initialEntryMode: TimePickerEntryMode.dial,
+                                  confirmText: "Set",
+                                );
+                                if (time != null) {
+                                  deadline = DateTime(value.year, value.month,
+                                      value.day, time.hour, time.minute);
+                                  setState(() {
+                                    changeValues(type: "date", value: deadline);
+                                  });
+                                }
                               }
                             }
                           }),
@@ -479,7 +506,7 @@ class _TaskPageState extends State<TaskPage> {
                             textAlign: TextAlign.end,
                           ),
                         ),
-                        onTap: (){},
+                        onTap: () {},
                       ),
                     ],
                   ),

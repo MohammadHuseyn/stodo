@@ -62,86 +62,86 @@ class _FriendsState extends State<Friends> {
                                         Text("Friend requests"),
                                         mainUser.friendRequest.length == 0
                                             ? Padding(
-                                              padding: const EdgeInsets.only(top: 40),
-                                              child: RichText(
-                                          textAlign: TextAlign.center,
-                                          text: TextSpan(children: [
-                                                TextSpan(text: "There is no request\n",
-                                                    style: TextStyle(fontSize: 30)),
+                                          padding: const EdgeInsets.only(top: 40),
+                                          child: RichText(
+                                            textAlign: TextAlign.center,
+                                            text: TextSpan(children: [
+                                              TextSpan(text: "There is no request\n\n\n",
+                                                  style: TextStyle(fontSize: 30,color: Colors.black54)),
                                               TextSpan(text: "💌",style: TextStyle(fontSize: 100))
-                                        ]),),
-                                            )
+                                            ]),),
+                                        )
                                             : Expanded(
-                                                child: ListView.builder(
-                                                  itemCount: mainUser
-                                                      .friendRequest.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    User user = mainUser
-                                                        .friendRequest
-                                                        .elementAt(index);
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 10),
-                                                      child: ListTile(
-                                                        onTap: () =>
-                                                            Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            Profile(
-                                                                              mainUserId: widget.mainUserId,
-                                                                              userId: user.getId,
-                                                                            ))),
-                                                        leading:
-                                                            const CircleAvatar(
-                                                          radius: 25,
-                                                          backgroundImage:
-                                                              AssetImage(
-                                                                  "assets/avatar.png"),
+                                          child: ListView.builder(
+                                            itemCount: mainUser
+                                                .friendRequest.length,
+                                            itemBuilder:
+                                                (context, index) {
+                                              User user = mainUser
+                                                  .friendRequest
+                                                  .elementAt(index);
+                                              return Padding(
+                                                padding:
+                                                const EdgeInsets.only(
+                                                    top: 10),
+                                                child: ListTile(
+                                                  onTap: () =>
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                  Profile(
+                                                                    mainUserId: widget.mainUserId,
+                                                                    userId: user.getId,
+                                                                  ))),
+                                                  leading:
+                                                  const CircleAvatar(
+                                                    radius: 25,
+                                                    backgroundImage:
+                                                    AssetImage(
+                                                        "assets/avatar.png"),
+                                                  ),
+                                                  title: Text(
+                                                    user.username,
+                                                    textAlign:
+                                                    TextAlign.center,
+                                                  ),
+                                                  trailing: Wrap(
+                                                    spacing: 5,
+                                                    children: [
+                                                      IconButton(
+                                                        icon: Icon(
+                                                          Icons.clear,
+                                                          color:
+                                                          Colors.red,
                                                         ),
-                                                        title: Text(
-                                                          user.username,
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                        ),
-                                                        trailing: Wrap(
-                                                          spacing: 5,
-                                                          children: [
-                                                            IconButton(
-                                                              icon: Icon(
-                                                                Icons.clear,
-                                                                color:
-                                                                    Colors.red,
-                                                              ),
-                                                              onPressed: () {
-                                                                setState(() =>
-                                                                    IgnoreRequest(
-                                                                        user));
-                                                              },
-                                                            ),
-                                                            IconButton(
-                                                              icon: const Icon(
-                                                                Icons.check,
-                                                                color: Colors
-                                                                    .green,
-                                                                size: 25,
-                                                              ),
-                                                              onPressed: () {
-                                                                setState(() =>
-                                                                    acceptRequest(
-                                                                        user));
-                                                              },
-                                                            ),
-                                                          ],
-                                                        ),
+                                                        onPressed: () {
+                                                          setState(() =>
+                                                              IgnoreRequest(
+                                                                  user));
+                                                        },
                                                       ),
-                                                    );
-                                                  },
+                                                      IconButton(
+                                                        icon: const Icon(
+                                                          Icons.check,
+                                                          color: Colors
+                                                              .green,
+                                                          size: 25,
+                                                        ),
+                                                        onPressed: () {
+                                                          setState(() =>
+                                                              acceptRequest(
+                                                                  user));
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
+                                              );
+                                            },
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   );
@@ -150,14 +150,14 @@ class _FriendsState extends State<Friends> {
                       icon: const Icon(Icons.emoji_people)),
                   mainUser.friendRequest.isEmpty
                       ? Container(
-                          height: 12,
-                        )
+                    height: 12,
+                  )
                       : Container(
-                          height: 12,
-                          width: 12,
-                          decoration: const BoxDecoration(
-                              color: Colors.yellow, shape: BoxShape.circle),
-                        )
+                    height: 12,
+                    width: 12,
+                    decoration: const BoxDecoration(
+                        color: Colors.yellow, shape: BoxShape.circle),
+                  )
                 ],
               ),
             )

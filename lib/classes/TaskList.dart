@@ -26,6 +26,9 @@ class TaskList {
     _joinRequests.add(user);
   }
 
+  void removeJoinRequest(User user){
+    _joinRequests.remove(user);
+  }
   TaskList(
       {required this.name,
       required this.educationCenter,
